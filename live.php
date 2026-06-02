@@ -97,6 +97,7 @@ function h($value): string
 
 <script>
 const code = <?= json_encode($code) ?>;
+let livePollingInterval = null;
 
 async function loadResults() {
 
@@ -338,7 +339,103 @@ function escapeHtml(text) {
 
 loadResults();
 
-setInterval(loadResults, 2000);
+function startLivePolling(delay = 10000) {
+    if (livePollingInterval !== null) {
+        clearInterval(livePollingInterval);
+    }
+
+    livePollingInterval = setInterval(loadResults, delay);
+}
+
+async function connectRealtime() {
+    try {
+        const response = await fetch("api/realtime-config.php", { cache: "no-store" });
+        const config = await response.json();
+
+        if (!config.ok) {
+            startLivePolling(2000);
+            return;
+        }
+
+        let ref = 1;
+        const socket = new WebSocket(
+            config.websocket_url +
+            "?apikey=" + encodeURIComponent(config.anon_key) +
+            "&vsn=1.0.0"
+        );
+
+        const send = (topic, event, payload = {}) => {
+            socket.send(JSON.stringify({
+                topic,
+                event,
+                payload,
+                ref: String(ref++),
+                join_ref: "1"
+            }));
+        };
+
+        socket.addEventListener("open", () => {
+            const topic = "realtime:brainbananas-live-" + code;
+
+            send(topic, "phx_join", {
+                config: {
+                    postgres_changes: [
+                        {
+                            event: "*",
+                            schema: "public",
+                            table: "brainbananas_sessions",
+                            filter: "code=eq." + code
+                        },
+                        {
+                            event: "*",
+                            schema: "public",
+                            table: "brainbananas_answers",
+                            filter: "session_code=eq." + code
+                        },
+                        {
+                            event: "*",
+                            schema: "public",
+                            table: "brainbananas_players",
+                            filter: "session_code=eq." + code
+                        }
+                    ],
+                    broadcast: { self: false },
+                    presence: { key: "" }
+                },
+                access_token: config.anon_key
+            });
+
+            startLivePolling(10000);
+
+            setInterval(() => {
+                if (socket.readyState === WebSocket.OPEN) {
+                    send("phoenix", "heartbeat", {});
+                }
+            }, 25000);
+        });
+
+        socket.addEventListener("message", (event) => {
+            const message = JSON.parse(event.data);
+
+            if (message.event === "postgres_changes") {
+                loadResults();
+            }
+        });
+
+        socket.addEventListener("close", () => {
+            startLivePolling(2000);
+        });
+
+        socket.addEventListener("error", () => {
+            startLivePolling(2000);
+        });
+    } catch (error) {
+        console.error(error);
+        startLivePolling(2000);
+    }
+}
+
+connectRealtime();
 
 document.addEventListener("submit", (event) => {
     event.target.querySelectorAll("button[type='submit'], button:not([type])")
