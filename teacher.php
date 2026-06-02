@@ -128,16 +128,36 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
                         <div class="mb-3">
                             <label class="form-label">Kies quiz</label>
 
-                            <select name="quiz" class="form-select" required>
+                            <div class="btn-group w-100 mb-2" role="group" aria-label="Quizfilter">
+                                <button type="button" class="btn btn-outline-secondary active" data-quiz-filter="all">
+                                    Alles
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-quiz-filter="BK">
+                                    BK
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-quiz-filter="GT">
+                                    GT
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-quiz-filter="H">
+                                    H
+                                </button>
+                            </div>
+
+                            <select name="quiz" class="form-select" id="quiz-select" required>
                                 <?php foreach ($quizzes as $quizFile): ?>
                                     <?php $name = basename($quizFile); ?>
                                     <?php $displayName = str_replace('_', ' ', pathinfo($name, PATHINFO_FILENAME)); ?>
 
-                                    <option value="<?= h($name) ?>">
+                                    <option
+                                        value="<?= h($name) ?>"
+                                        data-filename="<?= h(strtoupper($name)) ?>"
+                                    >
                                         <?= h($displayName) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+
+                            <div class="text-secondary small mt-2" id="quiz-filter-status"></div>
                         </div>
 
                         <label class="form-check mb-3">
@@ -191,6 +211,57 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
 </div>
 
 <script>
+const quizSelect = document.getElementById("quiz-select");
+const quizFilterStatus = document.getElementById("quiz-filter-status");
+const quizOptions = quizSelect
+    ? Array.from(quizSelect.options).map((option) => ({
+        value: option.value,
+        text: option.text,
+        filename: option.dataset.filename || option.value.toUpperCase()
+    }))
+    : [];
+
+function applyQuizFilter(filter) {
+    if (!quizSelect) {
+        return;
+    }
+
+    const visibleOptions = quizOptions.filter((option) => {
+        return filter === "all" || option.filename.startsWith(filter);
+    });
+
+    quizSelect.innerHTML = "";
+
+    visibleOptions.forEach((option) => {
+        const newOption = document.createElement("option");
+        newOption.value = option.value;
+        newOption.textContent = option.text;
+        newOption.dataset.filename = option.filename;
+        quizSelect.appendChild(newOption);
+    });
+
+    quizSelect.disabled = visibleOptions.length === 0;
+
+    if (quizFilterStatus) {
+        quizFilterStatus.textContent = visibleOptions.length === 0
+            ? "Geen quizzen gevonden voor dit filter."
+            : `${visibleOptions.length} quiz${visibleOptions.length === 1 ? "" : "zen"} gevonden.`;
+    }
+}
+
+document.querySelectorAll("[data-quiz-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+        document.querySelectorAll("[data-quiz-filter]").forEach((otherButton) => {
+            otherButton.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        applyQuizFilter(button.dataset.quizFilter);
+    });
+});
+
+applyQuizFilter("all");
+
 document.addEventListener("submit", (event) => {
     event.target.querySelectorAll("button[type='submit'], button:not([type])")
         .forEach((button) => {

@@ -10,6 +10,8 @@ function h($value): string
 
 $historyDir = __DIR__ . '/session-history';
 $indexPath = $historyDir . '/index.json';
+$message = '';
+$messageType = 'success';
 
 if (!is_dir($historyDir)) {
     mkdir($historyDir, 0755, true);
@@ -24,6 +26,38 @@ $sessions = json_decode($json, true);
 
 if (!is_array($sessions)) {
     $sessions = [];
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    $action = $_POST['action'] ?? '';
+    $file = basename((string)($_POST['file'] ?? ''));
+
+    if ($action !== 'delete') {
+        $message = 'Onbekende actie.';
+        $messageType = 'danger';
+    } elseif ($file === '') {
+        $message = 'Geen sessiebestand gekozen.';
+        $messageType = 'danger';
+    } else {
+        $path = $historyDir . '/' . $file;
+
+        if (file_exists($path) && !unlink($path)) {
+            $message = 'Kon sessiebestand niet verwijderen.';
+            $messageType = 'danger';
+        } else {
+            $sessions = array_values(array_filter($sessions, function ($session) use ($file) {
+                return ($session['file'] ?? '') !== $file;
+            }));
+
+            file_put_contents(
+                $indexPath,
+                json_encode($sessions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            );
+
+            $message = 'Opgeslagen sessie verwijderd.';
+            $messageType = 'success';
+        }
+    }
 }
 
 $sessions = array_reverse($sessions);
@@ -66,6 +100,12 @@ $sessions = array_reverse($sessions);
             Aantal sessies gevonden: <strong><?= count($sessions) ?></strong>
         </div>
 
+        <?php if ($message !== ''): ?>
+            <div class="alert alert-<?= h($messageType) ?>">
+                <?= h($message) ?>
+            </div>
+        <?php endif; ?>
+
         <div class="card">
             <div class="table-responsive">
                 <table class="table table-vcenter card-table">
@@ -77,7 +117,7 @@ $sessions = array_reverse($sessions);
                             <th>Leerlingen</th>
                             <th>Vragen</th>
                             <th>Bestand</th>
-                            <th>Bekijken</th>
+                            <th>Acties</th>
                         </tr>
                     </thead>
 
@@ -108,12 +148,30 @@ $sessions = array_reverse($sessions);
                             </td>
                             <td>
                                 <?php if (!empty($session['file'])): ?>
-                                    <a
-                                        href="view-session.php?file=<?= urlencode($session['file']) ?>"
-                                        class="btn btn-sm btn-outline-primary"
-                                    >
-                                        Bekijk
-                                    </a>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <a
+                                            href="view-session.php?file=<?= urlencode($session['file']) ?>"
+                                            class="btn btn-sm btn-outline-primary"
+                                        >
+                                            Bekijk
+                                        </a>
+
+                                        <form method="post">
+                                            <input
+                                                type="hidden"
+                                                name="action"
+                                                value="delete"
+                                            >
+                                            <input
+                                                type="hidden"
+                                                name="file"
+                                                value="<?= h($session['file']) ?>"
+                                            >
+                                            <button class="btn btn-sm btn-outline-danger">
+                                                Verwijderen
+                                            </button>
+                                        </form>
+                                    </div>
                                 <?php else: ?>
                                     -
                                 <?php endif; ?>
