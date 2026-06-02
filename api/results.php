@@ -345,14 +345,6 @@ foreach ($players as $player) {
     }
 }
 
-$archiveStatus = archive_session_if_complete(
-    $code,
-    $session,
-    $quiz,
-    $players,
-    $allAnswers
-);
-
 echo json_encode([
     'ok' => true,
     'session_code' => $code,
@@ -366,6 +358,5 @@ echo json_encode([
     'player_count' => count($players),
     'is_last_question' => $currentQuestion >= $totalQuestions - 1,
     'server_time' => date('Y-m-d H:i:s'),
-    'timezone' => 'Europe/Amsterdam',
-    'archive' => $archiveStatus
+    'timezone' => 'Europe/Amsterdam'
 ], JSON_UNESCAPED_UNICODE);

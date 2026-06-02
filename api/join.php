@@ -37,13 +37,27 @@ if (empty($sessionResult["data"])) {
 
 $session = $sessionResult["data"][0];
 
-$playerResult = supabase_request("POST", "brainbananas_players", [
-    "session_code" => $code,
-    "student_name" => $student
-]);
+$existingPlayerResult = supabase_request(
+    "GET",
+    "brainbananas_players" .
+    "?session_code=eq." . urlencode($code) .
+    "&student_name=eq." . urlencode($student) .
+    "&select=*"
+);
 
-if (!$playerResult["ok"]) {
-    die("Kon niet deelnemen aan sessie: " . h($playerResult["raw"] ?? "Onbekende fout"));
+if (!$existingPlayerResult["ok"]) {
+    die("Kon leerling niet controleren: " . h($existingPlayerResult["raw"] ?? "Onbekende fout"));
+}
+
+if (empty($existingPlayerResult["data"])) {
+    $playerResult = supabase_request("POST", "brainbananas_players", [
+        "session_code" => $code,
+        "student_name" => $student
+    ]);
+
+    if (!$playerResult["ok"]) {
+        die("Kon niet deelnemen aan sessie: " . h($playerResult["raw"] ?? "Onbekende fout"));
+    }
 }
 
 $_SESSION["student"] = $student;

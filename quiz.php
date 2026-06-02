@@ -418,6 +418,14 @@ async function checkQuestionChange() {
 }
 
 setInterval(checkQuestionChange, 1500);
+
+document.addEventListener("submit", (event) => {
+    event.target.querySelectorAll("button[type='submit'], button:not([type])")
+        .forEach((button) => {
+            button.disabled = true;
+            button.textContent = "Even wachten...";
+        });
+});
 </script>
 
 <script src="tabler/core/dist/js/tabler.min.js"></script>

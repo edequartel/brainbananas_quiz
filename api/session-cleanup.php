@@ -2,6 +2,20 @@
 
 function brainbananas_cleanup_old_sessions(int $maxAgeHours = 6): void
 {
+    $markerPath = __DIR__ . '/../session-options/.cleanup-last-run';
+
+    if (file_exists($markerPath) && (time() - filemtime($markerPath)) < 600) {
+        return;
+    }
+
+    $markerDir = dirname($markerPath);
+
+    if (!is_dir($markerDir)) {
+        mkdir($markerDir, 0755, true);
+    }
+
+    touch($markerPath);
+
     $threshold = gmdate('c', time() - ($maxAgeHours * 60 * 60));
 
     $sessionsResult = supabase_request(

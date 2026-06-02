@@ -125,7 +125,7 @@ sort($quizzes);
                         <tr>
                             <th>Bestandsnaam</th>
                             <th>Nieuwe naam</th>
-                            <th class="w-1">Acties</th>
+                            <th>Acties</th>
                         </tr>
                     </thead>
 
@@ -172,6 +172,14 @@ sort($quizzes);
                             </td>
 
                             <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a
+                                        href="edit-quiz.php?file=<?= urlencode($name) ?>"
+                                        class="btn btn-outline-primary"
+                                    >
+                                        Bewerken
+                                    </a>
+
                                 <form method="post">
                                     <input
                                         type="hidden"
@@ -187,6 +195,7 @@ sort($quizzes);
                                         Verwijderen
                                     </button>
                                 </form>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>

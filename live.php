@@ -134,6 +134,23 @@ async function loadResults() {
     }
 
     const q = data.question;
+    const answerChoices = (q.answers || []).map((answer, index) => {
+        const isCorrect = Number(q.correct) === index;
+
+        return `
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                    ${escapeHtml(answer)}
+                </span>
+
+                ${
+                    isCorrect
+                    ? `<span class="badge bg-green text-green-fg">Juiste antwoord</span>`
+                    : ``
+                }
+            </li>
+        `;
+    }).join("");
 
     let rows = "";
 
@@ -210,6 +227,16 @@ async function loadResults() {
                         <h1 class="my-4">
                             ${escapeHtml(q.question)}
                         </h1>
+
+                        <div class="text-start mb-4">
+                            <div class="fw-bold mb-2">
+                                Antwoordkeuzes
+                            </div>
+
+                            <ul class="list-group">
+                                ${answerChoices}
+                            </ul>
+                        </div>
 
                         <div class="alert alert-info">
                             ${data.answered_count}
@@ -312,6 +339,14 @@ function escapeHtml(text) {
 loadResults();
 
 setInterval(loadResults, 2000);
+
+document.addEventListener("submit", (event) => {
+    event.target.querySelectorAll("button[type='submit'], button:not([type])")
+        .forEach((button) => {
+            button.disabled = true;
+            button.textContent = "Even wachten...";
+        });
+});
 </script>
 
 <script src="tabler/core/dist/js/tabler.min.js"></script>
