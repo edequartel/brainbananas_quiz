@@ -5,6 +5,28 @@ function h($value): string
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
+function grade_from_percentage($percentage): string
+{
+    $grade = 1 + ((float)$percentage / 100 * 9);
+    return number_format(round($grade, 1), 1, ',', '');
+}
+
+function format_session_date($value): string
+{
+    $value = trim((string)$value);
+
+    if ($value === '') {
+        return '-';
+    }
+
+    try {
+        $date = new DateTime($value);
+        return $date->format('d-m-y H:i');
+    } catch (Exception $exception) {
+        return $value;
+    }
+}
+
 $file = basename($_GET['file'] ?? '');
 
 if ($file === '') {
@@ -50,6 +72,7 @@ $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['questi
                 <h1>🍌 Opgeslagen BrainBananas-sessie</h1>
                 <div class="text-secondary">
                     <?= h($metadata['quiz_title']) ?> · <?= h($metadata['session_code']) ?>
+                    · <?= h(format_session_date($metadata['archived_at_iso'] ?? $metadata['archived_at'] ?? '')) ?>
                 </div>
             </div>
 
@@ -117,6 +140,7 @@ $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['questi
                             <th>Leerling</th>
                             <th>Goed</th>
                             <th>Beantwoord</th>
+                            <th>Cijfer</th>
                             <th>Resultaat</th>
                         </tr>
                     </thead>
@@ -127,6 +151,11 @@ $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['questi
                             <td class="fw-bold"><?= h($student['student_name']) ?></td>
                             <td><?= h($student['correct']) ?> / <?= h($countedQuestionCount) ?></td>
                             <td><?= h($student['answered']) ?> / <?= h($countedQuestionCount) ?></td>
+                            <td>
+                                <span class="badge bg-green text-green-fg">
+                                    <?= h(grade_from_percentage($student['percentage'])) ?>
+                                </span>
+                            </td>
                             <td>
                                 <span class="badge bg-yellow text-yellow-fg">
                                     <?= h($student['percentage']) ?>%
@@ -148,6 +177,7 @@ $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['questi
                     <h2 class="card-title">
                         <?= h($student['student_name']) ?>
                         · <?= h($student['correct']) ?> / <?= h($countedQuestionCount) ?>
+                        · cijfer <?= h(grade_from_percentage($student['percentage'])) ?>
                         · <?= h($student['percentage']) ?>%
                     </h2>
                 </div>

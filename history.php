@@ -8,6 +8,22 @@ function h($value): string
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
+function format_history_date($value): string
+{
+    $value = trim((string)$value);
+
+    if ($value === '') {
+        return '-';
+    }
+
+    try {
+        $date = new DateTime($value);
+        return $date->format('d-m-y H:i');
+    } catch (Exception $exception) {
+        return $value;
+    }
+}
+
 $historyDir = __DIR__ . '/session-history';
 $indexPath = $historyDir . '/index.json';
 $message = '';
@@ -133,7 +149,7 @@ $sessions = array_reverse($sessions);
 
                     <?php foreach ($sessions as $session): ?>
                         <tr>
-                            <td><?= h($session['date'] ?? '-') ?></td>
+                            <td><?= h(format_history_date($session['date_iso'] ?? $session['date'] ?? '')) ?></td>
                             <td class="fw-bold"><?= h($session['session_code'] ?? '-') ?></td>
                             <td>
                                 <?= h($session['quiz_title'] ?? '-') ?>

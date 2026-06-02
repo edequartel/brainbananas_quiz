@@ -8,6 +8,12 @@ function h($value): string
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
+function grade_from_percentage($percentage): string
+{
+    $grade = 1 + ((float)$percentage / 100 * 9);
+    return number_format(round($grade, 1), 1, ',', '');
+}
+
 $code = strtoupper(trim($_GET['code'] ?? ''));
 
 if ($code === '') {
@@ -222,6 +228,7 @@ if (count($studentResults) > 0) {
                         <th>Leerling</th>
                         <th>Goed</th>
                         <th>Beantwoord</th>
+                        <th>Cijfer</th>
                         <th>Resultaat</th>
                     </tr>
                     </thead>
@@ -232,6 +239,11 @@ if (count($studentResults) > 0) {
                             <td class="fw-bold"><?= h($result['student_name']) ?></td>
                             <td><?= $result['correct'] ?> / <?= $countedQuestions ?></td>
                             <td><?= $result['answered'] ?> / <?= $countedQuestions ?></td>
+                            <td>
+                                <span class="badge bg-green text-green-fg">
+                                    <?= h(grade_from_percentage($result['percentage'])) ?>
+                                </span>
+                            </td>
                             <td>
                                 <span class="badge bg-yellow text-yellow-fg">
                                     <?= $result['percentage'] ?>%
@@ -253,6 +265,7 @@ if (count($studentResults) > 0) {
                     <h2 class="card-title">
                         <?= h($result['student_name']) ?>
                         · <?= $result['correct'] ?> / <?= $countedQuestions ?>
+                        · cijfer <?= h(grade_from_percentage($result['percentage'])) ?>
                         · <?= $result['percentage'] ?>%
                     </h2>
                 </div>
