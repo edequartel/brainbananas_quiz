@@ -163,6 +163,12 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
 
                 <?php endif; ?>
 
+                <form method="post" action="api/git-pull.php" class="mt-3">
+                    <button class="btn btn-outline-secondary w-100">
+                        Update vanaf Git
+                    </button>
+                </form>
+
             </div>
         </div>
 
