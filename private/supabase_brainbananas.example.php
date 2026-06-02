@@ -1,0 +1,6 @@
+<?php
+
+return [
+    'SUPABASE_URL' => 'https://your-project.supabase.co',
+    'SUPABASE_SERVICE_ROLE_KEY' => 'your-service-role-key'
+];

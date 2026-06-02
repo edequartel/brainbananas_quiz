@@ -1,0 +1,215 @@
+{
+    "metadata": {
+        "session_code": "97CA10",
+        "quiz_file": "piramide.json",
+        "quiz_title": "Piramiden in de Ecologie",
+        "created_at": "2026-05-31T13:12:58.553779+00:00",
+        "archived_at": "2026-05-31T07:20:53-06:00",
+        "student_count": 1,
+        "question_count": 10
+    },
+    "quiz": {
+        "title": "Piramiden in de Ecologie",
+        "questions": [
+            {
+                "question": "Wat laat een voedselpiramide zien?",
+                "answers": [
+                    "Hoeveel soorten er leven",
+                    "Hoe organismen afhankelijk zijn van elkaar voor voedsel",
+                    "Hoe oud organismen worden",
+                    "Hoe snel dieren groeien"
+                ],
+                "correct": 1
+            },
+            {
+                "question": "Welke organismen staan onderaan een voedselpiramide?",
+                "answers": [
+                    "Planten",
+                    "Rovers",
+                    "Reducenten",
+                    "Alleseters"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Waarom wordt een voedselpiramide naar boven toe smaller?",
+                "answers": [
+                    "Omdat organismen kleiner worden",
+                    "Omdat er meer soorten voorkomen",
+                    "Omdat steeds minder energie beschikbaar is",
+                    "Omdat planten verdwijnen"
+                ],
+                "correct": 2
+            },
+            {
+                "question": "Wat gebeurt er met een groot deel van de energie uit voedsel?",
+                "answers": [
+                    "Het wordt opgeslagen voor altijd",
+                    "Het verdwijnt uit het ecosysteem als warmte",
+                    "Het verandert in water",
+                    "Het gaat terug naar de zon"
+                ],
+                "correct": 1
+            },
+            {
+                "question": "Welke groep organismen zet zonne-energie om in chemische energie?",
+                "answers": [
+                    "Planten",
+                    "Schimmels",
+                    "Bacteriën",
+                    "Roofdieren"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Wat stelt een biomassapiramide voor?",
+                "answers": [
+                    "Het aantal individuen",
+                    "De leeftijd van organismen",
+                    "De totale massa van organismen per schakel",
+                    "De snelheid van voortplanting"
+                ],
+                "correct": 2
+            },
+            {
+                "question": "Waarom zijn er meestal minder roofdieren dan planten?",
+                "answers": [
+                    "Roofdieren hebben geen voedsel nodig",
+                    "Er gaat veel energie verloren tussen de schakels",
+                    "Planten eten roofdieren",
+                    "Roofdieren leven korter"
+                ],
+                "correct": 1
+            },
+            {
+                "question": "Wat laat een aantallenpiramide zien?",
+                "answers": [
+                    "Het aantal organismen per schakel",
+                    "De hoeveelheid energie",
+                    "De biomassa van organismen",
+                    "De temperatuur van het ecosysteem"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Welke schakel ontvangt energie direct van de zon?",
+                "answers": [
+                    "Producenten",
+                    "Consumenten van de derde orde",
+                    "Reducenten",
+                    "Rovers"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Waarom kunnen voedselketens meestal niet uit veel schakels bestaan?",
+                "answers": [
+                    "Omdat planten snel uitsterven",
+                    "Omdat dieren niet kunnen groeien",
+                    "Omdat bij elke schakel energie verloren gaat",
+                    "Omdat roofdieren geen energie gebruiken"
+                ],
+                "correct": 2
+            }
+        ]
+    },
+    "students": [
+        {
+            "student_name": "eric de q",
+            "correct": 7,
+            "answered": 9,
+            "percentage": 70,
+            "answers": [
+                {
+                    "question_index": 0,
+                    "question": "Wat laat een voedselpiramide zien?",
+                    "given_answer": "Hoe organismen afhankelijk zijn van elkaar voor voedsel",
+                    "correct_answer": "Hoe organismen afhankelijk zijn van elkaar voor voedsel",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:14:21.954149+00:00"
+                },
+                {
+                    "question_index": 1,
+                    "question": "Welke organismen staan onderaan een voedselpiramide?",
+                    "given_answer": "Planten",
+                    "correct_answer": "Planten",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:14:55.347447+00:00"
+                },
+                {
+                    "question_index": 2,
+                    "question": "Waarom wordt een voedselpiramide naar boven toe smaller?",
+                    "given_answer": "Omdat steeds minder energie beschikbaar is",
+                    "correct_answer": "Omdat steeds minder energie beschikbaar is",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:15:28.321173+00:00"
+                },
+                {
+                    "question_index": 3,
+                    "question": "Wat gebeurt er met een groot deel van de energie uit voedsel?",
+                    "given_answer": "Het verandert in water",
+                    "correct_answer": "Het verdwijnt uit het ecosysteem als warmte",
+                    "is_correct": false,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:15:56.839061+00:00"
+                },
+                {
+                    "question_index": 4,
+                    "question": "Welke groep organismen zet zonne-energie om in chemische energie?",
+                    "given_answer": "Planten",
+                    "correct_answer": "Planten",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:17:25.353162+00:00"
+                },
+                {
+                    "question_index": 5,
+                    "question": "Wat stelt een biomassapiramide voor?",
+                    "given_answer": "De totale massa van organismen per schakel",
+                    "correct_answer": "De totale massa van organismen per schakel",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:18:20.442549+00:00"
+                },
+                {
+                    "question_index": 6,
+                    "question": "Waarom zijn er meestal minder roofdieren dan planten?",
+                    "given_answer": "Er gaat veel energie verloren tussen de schakels",
+                    "correct_answer": "Er gaat veel energie verloren tussen de schakels",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:18:43.226989+00:00"
+                },
+                {
+                    "question_index": 7,
+                    "question": "Wat laat een aantallenpiramide zien?",
+                    "given_answer": "Het aantal organismen per schakel",
+                    "correct_answer": "Het aantal organismen per schakel",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:19:12.288102+00:00"
+                },
+                {
+                    "question_index": 8,
+                    "question": "Welke schakel ontvangt energie direct van de zon?",
+                    "given_answer": null,
+                    "correct_answer": "Producenten",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 9,
+                    "question": "Waarom kunnen voedselketens meestal niet uit veel schakels bestaan?",
+                    "given_answer": "Omdat planten snel uitsterven",
+                    "correct_answer": "Omdat bij elke schakel energie verloren gaat",
+                    "is_correct": false,
+                    "answered": true,
+                    "answered_at": "2026-05-31T13:19:51.048779+00:00"
+                }
+            ]
+        }
+    ]
+}

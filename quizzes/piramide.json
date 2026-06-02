@@ -1,0 +1,115 @@
+{
+  "title": "Piramiden in de Ecologie",
+  "questions": [
+    {
+      "question": "Wat laat een voedselpiramide zien?",
+      "answers": [
+        "Hoeveel soorten er leven",
+        "Hoe organismen afhankelijk zijn van elkaar voor voedsel",
+        "Hoe oud organismen worden",
+        "Hoe snel dieren groeien"
+      ],
+      "correct": 1,
+      "uitleg": "Een voedselpiramide laat zien hoe organismen via voedsel met elkaar verbonden zijn en hoe energie door een voedselketen stroomt."
+    },
+    {
+      "question": "Welke organismen staan onderaan een voedselpiramide?",
+      "answers": [
+        "Planten",
+        "Rovers",
+        "Reducenten",
+        "Alleseters"
+      ],
+      "correct": 0,
+      "uitleg": "Planten zijn producenten: zij maken zelf voedsel met zonlicht en vormen daarom de basis van de voedselpiramide."
+    },
+    {
+      "question": "Waarom wordt een voedselpiramide naar boven toe smaller?",
+      "answers": [
+        "Omdat organismen kleiner worden",
+        "Omdat er meer soorten voorkomen",
+        "Omdat steeds minder energie beschikbaar is",
+        "Omdat planten verdwijnen"
+      ],
+      "correct": 2,
+      "uitleg": "Bij elke stap in de voedselketen gaat energie verloren, waardoor er hoger in de piramide minder energie beschikbaar is."
+    },
+    {
+      "question": "Wat gebeurt er met een groot deel van de energie uit voedsel?",
+      "answers": [
+        "Het wordt opgeslagen voor altijd",
+        "Het verdwijnt uit het ecosysteem als warmte",
+        "Het verandert in water",
+        "Het gaat terug naar de zon"
+      ],
+      "correct": 1,
+      "uitleg": "Organismen gebruiken veel energie om te bewegen, groeien en warm te blijven; die energie verlaat het ecosysteem vooral als warmte."
+    },
+    {
+      "question": "Welke groep organismen zet zonne-energie om in chemische energie?",
+      "answers": [
+        "Planten",
+        "Schimmels",
+        "Bacteriën",
+        "Roofdieren"
+      ],
+      "correct": 0,
+      "uitleg": "Planten gebruiken fotosynthese om zonne-energie vast te leggen in energierijke stoffen."
+    },
+    {
+      "question": "Wat stelt een biomassapiramide voor?",
+      "answers": [
+        "Het aantal individuen",
+        "De leeftijd van organismen",
+        "De totale massa van organismen per schakel",
+        "De snelheid van voortplanting"
+      ],
+      "correct": 2,
+      "uitleg": "Een biomassapiramide vergelijkt de totale massa van alle organismen in elke schakel van de voedselketen."
+    },
+    {
+      "question": "Waarom zijn er meestal minder roofdieren dan planten?",
+      "answers": [
+        "Roofdieren hebben geen voedsel nodig",
+        "Er gaat veel energie verloren tussen de schakels",
+        "Planten eten roofdieren",
+        "Roofdieren leven korter"
+      ],
+      "correct": 1,
+      "uitleg": "Omdat er tussen schakels veel energie verloren gaat, kan een ecosysteem meestal maar weinig roofdieren onderhouden."
+    },
+    {
+      "question": "Wat laat een aantallenpiramide zien?",
+      "answers": [
+        "Het aantal organismen per schakel",
+        "De hoeveelheid energie",
+        "De biomassa van organismen",
+        "De temperatuur van het ecosysteem"
+      ],
+      "correct": 0,
+      "uitleg": "Een aantallenpiramide geeft weer hoeveel organismen er in elke schakel van een voedselketen voorkomen."
+    },
+    {
+      "question": "Welke schakel ontvangt energie direct van de zon?",
+      "answers": [
+        "Producenten",
+        "Consumenten van de derde orde",
+        "Reducenten",
+        "Rovers"
+      ],
+      "correct": 0,
+      "uitleg": "Producenten, zoals planten, ontvangen energie direct van de zon en zetten die om in voedsel."
+    },
+    {
+      "question": "Waarom kunnen voedselketens meestal niet uit veel schakels bestaan?",
+      "answers": [
+        "Omdat planten snel uitsterven",
+        "Omdat dieren niet kunnen groeien",
+        "Omdat bij elke schakel energie verloren gaat",
+        "Omdat roofdieren geen energie gebruiken"
+      ],
+      "correct": 2,
+      "uitleg": "Bij elke schakel blijft maar een deel van de energie over voor de volgende schakel, waardoor lange voedselketens weinig energie overhouden."
+    }
+  ]
+}

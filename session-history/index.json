@@ -1,0 +1,20 @@
+[
+    {
+        "session_code": "97CA10",
+        "quiz_file": "piramide.json",
+        "quiz_title": "Piramiden in de Ecologie",
+        "date": "2026-05-31 07:20:53",
+        "file": "97CA10_2026-05-31_072053.json",
+        "student_count": 1,
+        "question_count": 10
+    },
+    {
+        "session_code": "537203",
+        "quiz_file": "ademhaling.json",
+        "quiz_title": "Ademhaling",
+        "date": "2026-05-31 23:43:34",
+        "file": "537203_2026-05-31_234334.json",
+        "student_count": 1,
+        "question_count": 15
+    }
+]

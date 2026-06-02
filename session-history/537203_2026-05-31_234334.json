@@ -1,0 +1,301 @@
+{
+    "metadata": {
+        "session_code": "537203",
+        "quiz_file": "ademhaling.json",
+        "quiz_title": "Ademhaling",
+        "created_at": "2026-06-01T05:39:57.465744+00:00",
+        "archived_at": "2026-05-31T23:43:34-06:00",
+        "student_count": 1,
+        "question_count": 15
+    },
+    "quiz": {
+        "title": "Ademhaling",
+        "questions": [
+            {
+                "question": "Welke organen horen bij het ademhalingsstelsel?",
+                "answers": [
+                    "Hart en bloedvaten",
+                    "Longen en luchtpijp",
+                    "Maag en darmen",
+                    "Nieren en blaas"
+                ],
+                "correct": 1
+            },
+            {
+                "question": "Waar vindt gaswisseling plaats?",
+                "answers": [
+                    "In de longblaasjes",
+                    "In de luchtpijp",
+                    "In de bronchiën",
+                    "In de neus"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Welke stof neem je op tijdens het inademen?",
+                "answers": [
+                    "Koolstofdioxide",
+                    "Water",
+                    "Zuurstof",
+                    "Glucose"
+                ],
+                "correct": 2
+            },
+            {
+                "question": "Welke stof adem je vooral uit?",
+                "answers": [
+                    "Zuurstof",
+                    "Vet",
+                    "Koolstofdioxide",
+                    "Kalk"
+                ],
+                "correct": 2
+            },
+            {
+                "question": "Wat gebeurt er met de borstkas tijdens het inademen?",
+                "answers": [
+                    "De borstkas wordt kleiner",
+                    "De borstkas beweegt niet",
+                    "De borstkas wordt groter",
+                    "De borstkas zakt omlaag"
+                ],
+                "correct": 2
+            },
+            {
+                "question": "Welke spier helpt bij het ademhalen?",
+                "answers": [
+                    "De hartspier",
+                    "De buikspier",
+                    "Het middenrif",
+                    "De kuitspier"
+                ],
+                "correct": 2
+            },
+            {
+                "question": "Wat gebeurt er met het middenrif tijdens het inademen?",
+                "answers": [
+                    "Het gaat omhoog",
+                    "Het wordt vlakker",
+                    "Het stopt met bewegen",
+                    "Het wordt kleiner"
+                ],
+                "correct": 1
+            },
+            {
+                "question": "Waarom is zuurstof belangrijk voor je lichaam?",
+                "answers": [
+                    "Voor verbranding in cellen",
+                    "Voor het maken van botten",
+                    "Voor het verteren van voedsel",
+                    "Voor het groeien van haren"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Hoe heet het buisje waardoor lucht naar de longen gaat?",
+                "answers": [
+                    "Slokdarm",
+                    "Luchtpijp",
+                    "Urinebuis",
+                    "Ader"
+                ],
+                "correct": 1
+            },
+            {
+                "question": "Wat gebeurt er bij uitademen?",
+                "answers": [
+                    "De longen vullen zich met lucht",
+                    "De borstkas wordt groter",
+                    "Lucht gaat naar binnen",
+                    "Lucht verlaat de longen"
+                ],
+                "correct": 3
+            },
+            {
+                "question": "Welke kleine vertakkingen zitten in de longen?",
+                "answers": [
+                    "Pezen",
+                    "Bronchiën",
+                    "Darmvlokken",
+                    "Spieren"
+                ],
+                "correct": 1
+            },
+            {
+                "question": "Wat is de functie van neushaartjes?",
+                "answers": [
+                    "Voedsel proeven",
+                    "Geluid versterken",
+                    "Bacteriën doden",
+                    "Vuil uit de lucht halen"
+                ],
+                "correct": 3
+            },
+            {
+                "question": "Waarom is roken slecht voor de longen?",
+                "answers": [
+                    "Het beschadigt de longen",
+                    "Het maakt de botten harder",
+                    "Het zorgt voor extra zuurstof",
+                    "Het helpt de ademhaling"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Wat gebeurt er met zuurstof in de longblaasjes?",
+                "answers": [
+                    "Het gaat naar het bloed",
+                    "Het blijft in de longen",
+                    "Het verandert in vet",
+                    "Het gaat naar de maag"
+                ],
+                "correct": 0
+            },
+            {
+                "question": "Wat vervoert zuurstof door het lichaam?",
+                "answers": [
+                    "Speeksel",
+                    "Bloed",
+                    "Zweet",
+                    "Lymfe"
+                ],
+                "correct": 1
+            }
+        ]
+    },
+    "students": [
+        {
+            "student_name": "les",
+            "correct": 4,
+            "answered": 5,
+            "percentage": 27,
+            "answers": [
+                {
+                    "question_index": 0,
+                    "question": "Welke organen horen bij het ademhalingsstelsel?",
+                    "given_answer": "Hart en bloedvaten",
+                    "correct_answer": "Longen en luchtpijp",
+                    "is_correct": false,
+                    "answered": true,
+                    "answered_at": "2026-06-01T05:40:49.770372+00:00"
+                },
+                {
+                    "question_index": 1,
+                    "question": "Waar vindt gaswisseling plaats?",
+                    "given_answer": null,
+                    "correct_answer": "In de longblaasjes",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 2,
+                    "question": "Welke stof neem je op tijdens het inademen?",
+                    "given_answer": null,
+                    "correct_answer": "Zuurstof",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 3,
+                    "question": "Welke stof adem je vooral uit?",
+                    "given_answer": "Koolstofdioxide",
+                    "correct_answer": "Koolstofdioxide",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-06-01T05:41:26.518043+00:00"
+                },
+                {
+                    "question_index": 4,
+                    "question": "Wat gebeurt er met de borstkas tijdens het inademen?",
+                    "given_answer": null,
+                    "correct_answer": "De borstkas wordt groter",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 5,
+                    "question": "Welke spier helpt bij het ademhalen?",
+                    "given_answer": null,
+                    "correct_answer": "Het middenrif",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 6,
+                    "question": "Wat gebeurt er met het middenrif tijdens het inademen?",
+                    "given_answer": null,
+                    "correct_answer": "Het wordt vlakker",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 7,
+                    "question": "Waarom is zuurstof belangrijk voor je lichaam?",
+                    "given_answer": null,
+                    "correct_answer": "Voor verbranding in cellen",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 8,
+                    "question": "Hoe heet het buisje waardoor lucht naar de longen gaat?",
+                    "given_answer": "Luchtpijp",
+                    "correct_answer": "Luchtpijp",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-06-01T05:42:02.21299+00:00"
+                },
+                {
+                    "question_index": 9,
+                    "question": "Wat gebeurt er bij uitademen?",
+                    "given_answer": null,
+                    "correct_answer": "Lucht verlaat de longen",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 10,
+                    "question": "Welke kleine vertakkingen zitten in de longen?",
+                    "given_answer": null,
+                    "correct_answer": "Bronchiën",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 11,
+                    "question": "Wat is de functie van neushaartjes?",
+                    "given_answer": null,
+                    "correct_answer": "Vuil uit de lucht halen",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 12,
+                    "question": "Waarom is roken slecht voor de longen?",
+                    "given_answer": null,
+                    "correct_answer": "Het beschadigt de longen",
+                    "is_correct": false,
+                    "answered": false
+                },
+                {
+                    "question_index": 13,
+                    "question": "Wat gebeurt er met zuurstof in de longblaasjes?",
+                    "given_answer": "Het gaat naar het bloed",
+                    "correct_answer": "Het gaat naar het bloed",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-06-01T05:42:51.930226+00:00"
+                },
+                {
+                    "question_index": 14,
+                    "question": "Wat vervoert zuurstof door het lichaam?",
+                    "given_answer": "Bloed",
+                    "correct_answer": "Bloed",
+                    "is_correct": true,
+                    "answered": true,
+                    "answered_at": "2026-06-01T05:43:16.220316+00:00"
+                }
+            ]
+        }
+    ]
+}

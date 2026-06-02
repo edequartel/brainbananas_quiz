@@ -1,0 +1,32 @@
+{
+  "title": "Biology Basics",
+  "subject": "Biology",
+  "questions": [
+    {
+      "id": 1,
+      "question": "What pumps blood through the body?",
+      "answers": [
+        "Heart",
+        "Lung",
+        "Kidney",
+        "Stomach"
+      ],
+      "correct": 0,
+      "uitleg": "The heart is a muscle that pumps blood through blood vessels to deliver oxygen and nutrients around the body.",
+      "skill": "Circulation"
+    },
+    {
+      "id": 2,
+      "question": "Which organ helps breathing?",
+      "answers": [
+        "Liver",
+        "Skin",
+        "Lungs",
+        "Brain"
+      ],
+      "correct": 2,
+      "uitleg": "The lungs take in oxygen when you breathe and help remove carbon dioxide when you breathe out.",
+      "skill": "Respiration"
+    }
+  ]
+}

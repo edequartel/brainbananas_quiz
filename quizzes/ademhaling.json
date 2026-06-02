@@ -1,0 +1,170 @@
+{
+  "title": "Ademhaling",
+  "questions": [
+    {
+      "question": "Welke organen horen bij het ademhalingsstelsel?",
+      "answers": [
+        "Hart en bloedvaten",
+        "Longen en luchtpijp",
+        "Maag en darmen",
+        "Nieren en blaas"
+      ],
+      "correct": 1,
+      "uitleg": "Het ademhalingsstelsel bestaat uit organen die lucht opnemen en afvoeren, zoals de longen en de luchtpijp."
+    },
+    {
+      "question": "Waar vindt gaswisseling plaats?",
+      "answers": [
+        "In de longblaasjes",
+        "In de luchtpijp",
+        "In de bronchiën",
+        "In de neus"
+      ],
+      "correct": 0,
+      "uitleg": "In de longblaasjes worden zuurstof en koolstofdioxide uitgewisseld tussen de lucht en het bloed."
+    },
+    {
+      "question": "Welke stof neem je op tijdens het inademen?",
+      "answers": [
+        "Koolstofdioxide",
+        "Water",
+        "Zuurstof",
+        "Glucose"
+      ],
+      "correct": 2,
+      "uitleg": "Bij het inademen komt zuurstof je longen binnen, zodat het via het bloed naar je cellen kan gaan."
+    },
+    {
+      "question": "Welke stof adem je vooral uit?",
+      "answers": [
+        "Zuurstof",
+        "Vet",
+        "Koolstofdioxide",
+        "Kalk"
+      ],
+      "correct": 2,
+      "uitleg": "Je ademt vooral koolstofdioxide uit, omdat dit afvalgas ontstaat bij verbranding in je cellen."
+    },
+    {
+      "question": "Wat gebeurt er met de borstkas tijdens het inademen?",
+      "answers": [
+        "De borstkas wordt kleiner",
+        "De borstkas beweegt niet",
+        "De borstkas wordt groter",
+        "De borstkas zakt omlaag"
+      ],
+      "correct": 2,
+      "uitleg": "Tijdens het inademen wordt de borstkas groter, waardoor de longen ruimte krijgen om zich met lucht te vullen."
+    },
+    {
+      "question": "Welke spier helpt bij het ademhalen?",
+      "answers": [
+        "De hartspier",
+        "De buikspier",
+        "Het middenrif",
+        "De kuitspier"
+      ],
+      "correct": 2,
+      "uitleg": "Het middenrif is een belangrijke ademhalingsspier die helpt om lucht de longen in en uit te bewegen."
+    },
+    {
+      "question": "Wat gebeurt er met het middenrif tijdens het inademen?",
+      "answers": [
+        "Het gaat omhoog",
+        "Het wordt vlakker",
+        "Het stopt met bewegen",
+        "Het wordt kleiner"
+      ],
+      "correct": 1,
+      "uitleg": "Als je inademt, trekt het middenrif samen en wordt het vlakker, waardoor de borstholte groter wordt."
+    },
+    {
+      "question": "Waarom is zuurstof belangrijk voor je lichaam?",
+      "answers": [
+        "Voor verbranding in cellen",
+        "Voor het maken van botten",
+        "Voor het verteren van voedsel",
+        "Voor het groeien van haren"
+      ],
+      "correct": 0,
+      "uitleg": "Cellen gebruiken zuurstof om voedingsstoffen te verbranden en energie vrij te maken."
+    },
+    {
+      "question": "Hoe heet het buisje waardoor lucht naar de longen gaat?",
+      "answers": [
+        "Slokdarm",
+        "Luchtpijp",
+        "Urinebuis",
+        "Ader"
+      ],
+      "correct": 1,
+      "uitleg": "De luchtpijp is de buis die lucht van je keel naar de longen vervoert."
+    },
+    {
+      "question": "Wat gebeurt er bij uitademen?",
+      "answers": [
+        "De longen vullen zich met lucht",
+        "De borstkas wordt groter",
+        "Lucht gaat naar binnen",
+        "Lucht verlaat de longen"
+      ],
+      "correct": 3,
+      "uitleg": "Bij uitademen wordt de borstkas kleiner en stroomt lucht uit de longen naar buiten."
+    },
+    {
+      "question": "Welke kleine vertakkingen zitten in de longen?",
+      "answers": [
+        "Pezen",
+        "Bronchiën",
+        "Darmvlokken",
+        "Spieren"
+      ],
+      "correct": 1,
+      "uitleg": "Bronchiën zijn vertakkingen van de luchtpijp die lucht verder de longen in leiden."
+    },
+    {
+      "question": "Wat is de functie van neushaartjes?",
+      "answers": [
+        "Voedsel proeven",
+        "Geluid versterken",
+        "Bacteriën doden",
+        "Vuil uit de lucht halen"
+      ],
+      "correct": 3,
+      "uitleg": "Neushaartjes houden stof en vuil tegen, zodat schonere lucht je luchtwegen binnenkomt."
+    },
+    {
+      "question": "Waarom is roken slecht voor de longen?",
+      "answers": [
+        "Het beschadigt de longen",
+        "Het maakt de botten harder",
+        "Het zorgt voor extra zuurstof",
+        "Het helpt de ademhaling"
+      ],
+      "correct": 0,
+      "uitleg": "Roken beschadigt longweefsel en maakt het moeilijker om goed zuurstof op te nemen."
+    },
+    {
+      "question": "Wat gebeurt er met zuurstof in de longblaasjes?",
+      "answers": [
+        "Het gaat naar het bloed",
+        "Het blijft in de longen",
+        "Het verandert in vet",
+        "Het gaat naar de maag"
+      ],
+      "correct": 0,
+      "uitleg": "Zuurstof gaat in de longblaasjes door de dunne wand heen naar het bloed."
+    },
+    {
+      "question": "Wat vervoert zuurstof door het lichaam?",
+      "answers": [
+        "Speeksel",
+        "Bloed",
+        "Zweet",
+        "Lymfe"
+      ],
+      "correct": 1,
+      "uitleg": "Bloed vervoert zuurstof vanaf de longen naar de rest van het lichaam."
+    }
+  ]
+}
