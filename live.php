@@ -202,7 +202,7 @@ async function loadResults() {
                 </span>
 
                 ${
-                    isCorrect
+                    isExpandedView() && isCorrect
                     ? `<span class="badge bg-green text-green-fg">Juiste antwoord</span>`
                     : ``
                 }
