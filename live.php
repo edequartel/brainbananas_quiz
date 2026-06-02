@@ -33,10 +33,6 @@ function h($value): string
 
         <div class="text-center mb-4">
 
-            <h1 class="display-5">
-                🍌 BrainBananas Live
-            </h1>
-
             <div class="text-secondary">
                 Sessiecode
             </div>
@@ -45,13 +41,24 @@ function h($value): string
                 <?= h($code) ?>
             </div>
 
-            <div class="mt-2">
+            <label class="form-check form-switch d-inline-flex align-items-center gap-2 mt-3">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="expanded-view-toggle"
+                >
+                <span class="form-check-label">
+                    Uitgebreide weergave
+                </span>
+            </label>
+
+            <div class="mt-2 d-none" data-expanded-field>
                 <span class="badge bg-secondary text-secondary-fg" id="connection-status">
                     Verbinding maken...
                 </span>
             </div>
 
-            <div class="mt-3 d-flex gap-2 justify-content-center flex-wrap">
+            <div class="mt-3 d-none gap-2 justify-content-center flex-wrap" data-expanded-field>
 
                 <a
                     href="student.php"
@@ -105,6 +112,28 @@ function h($value): string
 const code = <?= json_encode($code) ?>;
 let livePollingInterval = null;
 const connectionStatus = document.getElementById("connection-status");
+const expandedViewToggle = document.getElementById("expanded-view-toggle");
+const expandedFields = document.querySelectorAll("[data-expanded-field]");
+
+function isExpandedView() {
+    return expandedViewToggle && expandedViewToggle.checked;
+}
+
+function syncExpandedFields() {
+    expandedFields.forEach((element) => {
+        element.classList.toggle("d-none", !isExpandedView());
+        element.classList.toggle("d-flex", isExpandedView() && element.classList.contains("gap-2"));
+    });
+}
+
+if (expandedViewToggle) {
+    expandedViewToggle.addEventListener("change", () => {
+        syncExpandedFields();
+        loadResults();
+    });
+}
+
+syncExpandedFields();
 
 function setConnectionStatus(mode) {
     if (!connectionStatus) {
@@ -234,124 +263,137 @@ async function loadResults() {
         `;
     }
 
+    const questionCard = `
+        <div class="col-12">
+
+            <div class="card">
+
+                <div class="card-body text-center">
+
+                    ${
+                        isExpandedView()
+                        ? `<div class="text-secondary">
+                               ${escapeHtml(data.quiz_title)}
+                           </div>
+
+                           <h2 class="mt-2">
+                               Vraag ${data.current_question + 1}
+                               /
+                               ${data.total_questions}
+                           </h2>`
+                        : ``
+                    }
+
+                    <h1 class="my-4">
+                        ${escapeHtml(q.question)}
+                    </h1>
+
+                    <div class="text-start mb-4">
+                        <div class="fw-bold mb-2">
+                            Antwoordkeuzes
+                        </div>
+
+                        <ul class="list-group">
+                            ${answerChoices}
+                        </ul>
+                    </div>
+
+                    ${
+                        isExpandedView()
+                        ? `<div class="alert alert-info">
+                               ${data.answered_count}
+                               of
+                               ${data.player_count}
+                               leerlingen hebben geantwoord
+                           </div>
+
+                           <form method="post" action="api/next-question.php">
+
+                               <input
+                                   type="hidden"
+                                   name="code"
+                                   value="${escapeHtml(code)}"
+                               >
+
+                               <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                   <button
+                                       class="btn btn-yellow btn-lg"
+                                       name="action"
+                                       value="next"
+                                   >
+                                       ${data.is_last_question ? "Quiz afronden" : "Volgende vraag"}
+                                   </button>
+
+                                   <button
+                                       class="btn btn-outline-secondary btn-lg"
+                                       name="action"
+                                       value="skip"
+                                   >
+                                       Sla vraag over
+                                   </button>
+                               </div>
+
+                           </form>
+
+                           ${
+                               data.is_last_question
+                               ? `<div class="alert alert-warning mt-3">
+                                      Dit is de laatste vraag.
+                                  </div>`
+                               : ``
+                           }`
+                        : ``
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+    const liveAnswersCard = isExpandedView()
+        ? `<div class="col-12">
+
+               <div class="card">
+
+                   <div class="card-header">
+                       <h3 class="card-title">
+                           Live antwoorden van leerlingen
+                       </h3>
+                   </div>
+
+                   <div class="table-responsive">
+
+                       <table class="table table-vcenter card-table">
+
+                           <thead>
+                               <tr>
+                                   <th>Leerling</th>
+                                   <th>Status</th>
+                                   <th>Gegeven antwoord</th>
+                                   <th>Juiste antwoord</th>
+                                   <th>Tijd</th>
+                               </tr>
+                           </thead>
+
+                           <tbody>
+                               ${rows}
+                           </tbody>
+
+                       </table>
+
+                   </div>
+
+               </div>
+
+           </div>`
+        : ``;
+
     document.getElementById("live-area").innerHTML = `
         <div class="row g-4">
-
-            <div class="col-12">
-
-                <div class="card">
-
-                    <div class="card-body text-center">
-
-                        <div class="text-secondary">
-                            ${escapeHtml(data.quiz_title)}
-                        </div>
-
-                        <h2 class="mt-2">
-                            Vraag ${data.current_question + 1}
-                            /
-                            ${data.total_questions}
-                        </h2>
-
-                        <h1 class="my-4">
-                            ${escapeHtml(q.question)}
-                        </h1>
-
-                        <div class="text-start mb-4">
-                            <div class="fw-bold mb-2">
-                                Antwoordkeuzes
-                            </div>
-
-                            <ul class="list-group">
-                                ${answerChoices}
-                            </ul>
-                        </div>
-
-                        <div class="alert alert-info">
-                            ${data.answered_count}
-                            of
-                            ${data.player_count}
-                            leerlingen hebben geantwoord
-                        </div>
-
-                        <form method="post" action="api/next-question.php">
-
-                            <input
-                                type="hidden"
-                                name="code"
-                                value="${escapeHtml(code)}"
-                            >
-
-                            <div class="d-flex gap-2 justify-content-center flex-wrap">
-                                <button
-                                    class="btn btn-yellow btn-lg"
-                                    name="action"
-                                    value="next"
-                                >
-                                    ${data.is_last_question ? "Quiz afronden" : "Volgende vraag"}
-                                </button>
-
-                                <button
-                                    class="btn btn-outline-secondary btn-lg"
-                                    name="action"
-                                    value="skip"
-                                >
-                                    Sla vraag over
-                                </button>
-                            </div>
-
-                        </form>
-
-                        ${
-                            data.is_last_question
-                            ? `<div class="alert alert-warning mt-3">
-                                   Dit is de laatste vraag.
-                               </div>`
-                            : ``
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-12">
-
-                <div class="card">
-
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            Live antwoorden van leerlingen
-                        </h3>
-                    </div>
-
-                    <div class="table-responsive">
-
-                        <table class="table table-vcenter card-table">
-
-                            <thead>
-                                <tr>
-                                    <th>Leerling</th>
-                                    <th>Status</th>
-                                    <th>Gegeven antwoord</th>
-                                    <th>Juiste antwoord</th>
-                                    <th>Tijd</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                ${rows}
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+            ${questionCard}
+            ${liveAnswersCard}
         </div>
     `;
 }
