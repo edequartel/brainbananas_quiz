@@ -45,6 +45,12 @@ function h($value): string
                 <?= h($code) ?>
             </div>
 
+            <div class="mt-2">
+                <span class="badge bg-secondary text-secondary-fg" id="connection-status">
+                    Verbinding maken...
+                </span>
+            </div>
+
             <div class="mt-3 d-flex gap-2 justify-content-center flex-wrap">
 
                 <a
@@ -98,6 +104,28 @@ function h($value): string
 <script>
 const code = <?= json_encode($code) ?>;
 let livePollingInterval = null;
+const connectionStatus = document.getElementById("connection-status");
+
+function setConnectionStatus(mode) {
+    if (!connectionStatus) {
+        return;
+    }
+
+    if (mode === "websocket") {
+        connectionStatus.className = "badge bg-green text-green-fg";
+        connectionStatus.textContent = "WebSocket actief";
+        return;
+    }
+
+    if (mode === "connecting") {
+        connectionStatus.className = "badge bg-secondary text-secondary-fg";
+        connectionStatus.textContent = "WebSocket verbinden...";
+        return;
+    }
+
+    connectionStatus.className = "badge bg-yellow text-yellow-fg";
+    connectionStatus.textContent = "Polling actief";
+}
 
 async function loadResults() {
 
@@ -348,11 +376,14 @@ function startLivePolling(delay = 10000) {
 }
 
 async function connectRealtime() {
+    setConnectionStatus("connecting");
+
     try {
         const response = await fetch("api/realtime-config.php", { cache: "no-store" });
         const config = await response.json();
 
         if (!config.ok) {
+            setConnectionStatus("polling");
             startLivePolling(2000);
             return;
         }
@@ -405,6 +436,7 @@ async function connectRealtime() {
                 access_token: config.anon_key
             });
 
+            setConnectionStatus("websocket");
             startLivePolling(10000);
 
             setInterval(() => {
@@ -423,14 +455,17 @@ async function connectRealtime() {
         });
 
         socket.addEventListener("close", () => {
+            setConnectionStatus("polling");
             startLivePolling(2000);
         });
 
         socket.addEventListener("error", () => {
+            setConnectionStatus("polling");
             startLivePolling(2000);
         });
     } catch (error) {
         console.error(error);
+        setConnectionStatus("polling");
         startLivePolling(2000);
     }
 }

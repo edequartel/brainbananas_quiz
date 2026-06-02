@@ -72,6 +72,11 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
         <div class="text-center mb-4">
             <h1 class="display-5">🍌 BrainBananas</h1>
             <div class="text-secondary">Lerarenoverzicht</div>
+            <div class="mt-2">
+                <span class="badge bg-secondary text-secondary-fg" id="connection-status">
+                    Verbinding controleren...
+                </span>
+            </div>
         </div>
 
         <?php if ($activeCode): ?>
@@ -211,6 +216,7 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
 </div>
 
 <script>
+const connectionStatus = document.getElementById("connection-status");
 const quizSelect = document.getElementById("quiz-select");
 const quizFilterStatus = document.getElementById("quiz-filter-status");
 const quizOptions = quizSelect
@@ -261,6 +267,30 @@ document.querySelectorAll("[data-quiz-filter]").forEach((button) => {
 });
 
 applyQuizFilter("all");
+
+async function checkRealtimeStatus() {
+    if (!connectionStatus) {
+        return;
+    }
+
+    try {
+        const response = await fetch("api/realtime-config.php", { cache: "no-store" });
+        const config = await response.json();
+
+        if (config.ok) {
+            connectionStatus.className = "badge bg-green text-green-fg";
+            connectionStatus.textContent = "WebSocket beschikbaar";
+        } else {
+            connectionStatus.className = "badge bg-yellow text-yellow-fg";
+            connectionStatus.textContent = "Polling actief";
+        }
+    } catch (error) {
+        connectionStatus.className = "badge bg-yellow text-yellow-fg";
+        connectionStatus.textContent = "Polling actief";
+    }
+}
+
+checkRealtimeStatus();
 
 document.addEventListener("submit", (event) => {
     event.target.querySelectorAll("button[type='submit'], button:not([type])")
