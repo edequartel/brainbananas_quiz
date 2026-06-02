@@ -8,6 +8,7 @@ function h($value): string
 function normalize_quiz_filename(string $filename): string
 {
     $filename = trim($filename);
+    $filename = preg_replace('/\s+/', '_', $filename);
 
     if ($filename !== '' && !str_ends_with(strtolower($filename), '.json')) {
         $filename .= '.json';
@@ -42,7 +43,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $newPath = $quizDir . '/' . $newName;
 
         if (!is_valid_quiz_filename($newName)) {
-            $message = 'Gebruik alleen letters, cijfers, punten, streepjes en underscores in de nieuwe bestandsnaam.';
+            $message = 'Gebruik alleen letters, cijfers, spaties, punten, streepjes en underscores in de nieuwe bestandsnaam.';
             $messageType = 'danger';
         } elseif ($newName === $oldName) {
             $message = 'De nieuwe naam is hetzelfde als de oude naam.';

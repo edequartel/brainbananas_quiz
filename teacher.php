@@ -131,9 +131,10 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
                             <select name="quiz" class="form-select" required>
                                 <?php foreach ($quizzes as $quizFile): ?>
                                     <?php $name = basename($quizFile); ?>
+                                    <?php $displayName = str_replace('_', ' ', pathinfo($name, PATHINFO_FILENAME)); ?>
 
                                     <option value="<?= h($name) ?>">
-                                        <?= h($name) ?>
+                                        <?= h($displayName) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>

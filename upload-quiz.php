@@ -44,6 +44,18 @@ function validate_quiz_json(array $quiz): array
     return ['ok' => true, 'message' => ''];
 }
 
+function normalize_quiz_filename(string $filename): string
+{
+    $filename = trim($filename);
+    $filename = preg_replace('/\s+/', '_', $filename);
+
+    if ($filename !== '' && !str_ends_with(strtolower($filename), '.json')) {
+        $filename .= '.json';
+    }
+
+    return basename($filename);
+}
+
 $filename = '';
 $jsonText = '';
 $message = '';
@@ -60,14 +72,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $message = 'Plak de quiz-JSON in het tekstveld.';
         $messageType = 'danger';
     } else {
-        if (!str_ends_with(strtolower($filename), '.json')) {
-            $filename .= '.json';
-        }
-
-        $safeName = basename($filename);
+        $safeName = normalize_quiz_filename($filename);
 
         if (!preg_match('/^[a-zA-Z0-9._-]+\.json$/', $safeName)) {
-            $message = 'Gebruik alleen letters, cijfers, punten, streepjes en underscores in de bestandsnaam.';
+            $message = 'Gebruik alleen letters, cijfers, spaties, punten, streepjes en underscores in de bestandsnaam.';
             $messageType = 'danger';
         } else {
             $quiz = json_decode($jsonText, true);
