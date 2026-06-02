@@ -113,6 +113,10 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
                         Quiz JSON toevoegen
                     </a>
 
+                    <a href="manage-quizzes.php" class="btn btn-outline-secondary w-100 mt-3">
+                        Quizzen beheren
+                    </a>
+
                     <a href="history.php" class="btn btn-outline-primary w-100">
                         Bekijk opgeslagen sessies
                     </a>
@@ -159,6 +163,10 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
 
                     <a href="upload-quiz.php" class="btn btn-outline-secondary w-100 mt-3">
                         Quiz JSON toevoegen
+                    </a>
+
+                    <a href="manage-quizzes.php" class="btn btn-outline-secondary w-100 mt-3">
+                        Quizzen beheren
                     </a>
 
                 <?php endif; ?>
