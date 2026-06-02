@@ -2,6 +2,7 @@
 require __DIR__ . '/supabase.php';
 require __DIR__ . '/session-options.php';
 require __DIR__ . '/session-cleanup.php';
+require __DIR__ . '/archive-helper.php';
 
 $code = strtoupper(trim($_POST['code'] ?? ''));
 $action = $_POST['action'] ?? 'next';
@@ -56,6 +57,10 @@ $result = supabase_request(
 
 if (!$result['ok']) {
     die('Kon vraag niet bijwerken: ' . htmlspecialchars($result['raw'] ?? 'Onbekende fout'));
+}
+
+if ($isFinishing) {
+    brainbananas_archive_session($code);
 }
 
 header('Location: ../live.php?code=' . urlencode($code));
