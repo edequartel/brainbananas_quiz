@@ -131,7 +131,7 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
 
                 <?php else: ?>
 
-                    <form method="post">
+                    <form method="post" id="session-form">
 
                         <div class="mb-3">
                             <label class="form-label">Kies quiz</label>
@@ -180,31 +180,43 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
                             </span>
                         </label>
 
-                        <button class="btn btn-yellow w-100">
-                            Sessie starten
-                        </button>
-
                     </form>
 
-                    <a href="history.php" class="btn btn-outline-primary w-100 mt-3">
-                        Bekijk opgeslagen sessies
-                    </a>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-2">
+                        <div class="col">
+                            <button class="btn btn-yellow w-100 h-100" type="submit" form="session-form">
+                                Sessie starten
+                            </button>
+                        </div>
 
-                    <a href="upload-quiz.php" class="btn btn-outline-secondary w-100 mt-3">
-                        Quiz JSON toevoegen
-                    </a>
+                        <div class="col">
+                            <a href="history.php" class="btn btn-outline-primary w-100 h-100">
+                                Bekijk opgeslagen sessies
+                            </a>
+                        </div>
 
-                    <a href="manage-quizzes.php" class="btn btn-outline-secondary w-100 mt-3">
-                        Quizzen beheren
-                    </a>
+                        <div class="col">
+                            <a href="upload-quiz.php" class="btn btn-outline-secondary w-100 h-100">
+                                Quiz JSON toevoegen
+                            </a>
+                        </div>
+
+                        <div class="col">
+                            <a href="manage-quizzes.php" class="btn btn-outline-secondary w-100 h-100">
+                                Quizzen beheren
+                            </a>
+                        </div>
+
+                        <div class="col">
+                            <form method="post" action="api/git-pull.php" class="h-100">
+                                <button class="btn btn-outline-secondary w-100 h-100">
+                                    Update vanaf Git
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
                 <?php endif; ?>
-
-                <form method="post" action="api/git-pull.php" class="mt-3">
-                    <button class="btn btn-outline-secondary w-100">
-                        Update vanaf Git
-                    </button>
-                </form>
 
             </div>
         </div>
