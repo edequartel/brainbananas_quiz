@@ -123,6 +123,24 @@ sort($quizzes);
         <?php endif; ?>
 
         <div class="card">
+            <div class="card-body border-bottom">
+                <div class="btn-group w-100" role="group" aria-label="Quizfilter">
+                    <button type="button" class="btn btn-outline-secondary active" data-quiz-filter="all">
+                        Alles
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-quiz-filter="BK">
+                        BK
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-quiz-filter="GT">
+                        GT
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-quiz-filter="H">
+                        HAVO
+                    </button>
+                </div>
+                <div class="text-secondary small mt-2" id="quiz-filter-status"></div>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-vcenter card-table">
                     <thead>
@@ -144,7 +162,7 @@ sort($quizzes);
 
                     <?php foreach ($quizzes as $quizPath): ?>
                         <?php $name = basename($quizPath); ?>
-                        <tr>
+                        <tr data-quiz-filename="<?= h(strtoupper($name)) ?>">
                             <td class="fw-bold">
                                 <?= h($name) ?>
                             </td>
@@ -203,6 +221,11 @@ sort($quizzes);
                             </td>
                         </tr>
                     <?php endforeach; ?>
+                        <tr class="d-none" id="quiz-filter-empty-row">
+                            <td colspan="3" class="text-center text-secondary py-4">
+                                Geen quizzen gevonden voor dit filter.
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -212,6 +235,49 @@ sort($quizzes);
 </div>
 
 <script src="tabler/core/dist/js/tabler.min.js"></script>
+<script>
+const quizRows = Array.from(document.querySelectorAll("[data-quiz-filename]"));
+const quizFilterStatus = document.getElementById("quiz-filter-status");
+const quizFilterEmptyRow = document.getElementById("quiz-filter-empty-row");
+
+function applyQuizFilter(filter) {
+    let visibleCount = 0;
+
+    quizRows.forEach((row) => {
+        const filename = row.dataset.quizFilename || "";
+        const isVisible = filter === "all" || filename.startsWith(filter);
+
+        row.classList.toggle("d-none", !isVisible);
+
+        if (isVisible) {
+            visibleCount += 1;
+        }
+    });
+
+    if (quizFilterEmptyRow) {
+        quizFilterEmptyRow.classList.toggle("d-none", visibleCount !== 0 || quizRows.length === 0);
+    }
+
+    if (quizFilterStatus) {
+        quizFilterStatus.textContent = visibleCount === 0
+            ? "Geen quizzen gevonden voor dit filter."
+            : `${visibleCount} quiz${visibleCount === 1 ? "" : "zen"} gevonden.`;
+    }
+}
+
+document.querySelectorAll("[data-quiz-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+        document.querySelectorAll("[data-quiz-filter]").forEach((otherButton) => {
+            otherButton.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        applyQuizFilter(button.dataset.quizFilter);
+    });
+});
+
+applyQuizFilter("all");
+</script>
 
 </body>
 </html>
