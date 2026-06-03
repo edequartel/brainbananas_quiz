@@ -239,7 +239,7 @@ if (!function_exists('brainbananas_theme_picker')) {
                 Normaal
             </button>
             <button class="bb-theme-button" type="button" data-theme="large" data-bb-theme-button aria-pressed="false">
-                Grote tekst
+                Helder
             </button>
             <button class="bb-theme-button" type="button" data-theme="contrast" data-bb-theme-button aria-pressed="false">
                 Hoog contrast
