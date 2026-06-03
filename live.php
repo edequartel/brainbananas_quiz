@@ -119,9 +119,19 @@ const connectionStatus = document.getElementById("connection-status");
 const expandedViewToggle = document.getElementById("expanded-view-toggle");
 const expandedFields = document.querySelectorAll("[data-expanded-field]");
 const expandedViewStorageKey = "brainbananasExpandedView";
+let expandedViewEnabled = localStorage.getItem(expandedViewStorageKey) === "1";
 
 function isExpandedView() {
-    return expandedViewToggle && expandedViewToggle.checked;
+    return expandedViewEnabled;
+}
+
+function saveExpandedViewState(isEnabled) {
+    expandedViewEnabled = isEnabled;
+    localStorage.setItem(expandedViewStorageKey, isEnabled ? "1" : "0");
+
+    if (expandedViewToggle) {
+        expandedViewToggle.checked = isEnabled;
+    }
 }
 
 function syncExpandedFields() {
@@ -132,10 +142,10 @@ function syncExpandedFields() {
 }
 
 if (expandedViewToggle) {
-    expandedViewToggle.checked = localStorage.getItem(expandedViewStorageKey) === "1";
+    expandedViewToggle.checked = expandedViewEnabled;
 
     expandedViewToggle.addEventListener("change", () => {
-        localStorage.setItem(expandedViewStorageKey, expandedViewToggle.checked ? "1" : "0");
+        saveExpandedViewState(expandedViewToggle.checked);
         syncExpandedFields();
         loadResults();
     });
@@ -315,7 +325,12 @@ async function loadResults() {
                         leerlingen hebben geantwoord
                     </div>
 
-                    <form method="post" action="api/next-question.php">
+                    <form
+                        method="post"
+                        action="api/next-question.php"
+                        data-answered-count="${data.answered_count}"
+                        data-player-count="${data.player_count}"
+                    >
 
                         <input
                             type="hidden"
@@ -521,6 +536,28 @@ async function connectRealtime() {
 connectRealtime();
 
 document.addEventListener("submit", (event) => {
+    saveExpandedViewState(isExpandedView());
+
+    const submitter = event.submitter;
+    const answeredCount = Number(event.target.dataset.answeredCount || 0);
+    const playerCount = Number(event.target.dataset.playerCount || 0);
+
+    if (
+        submitter &&
+        submitter.name === "action" &&
+        submitter.value === "next" &&
+        answeredCount < playerCount
+    ) {
+        const confirmed = window.confirm(
+            "Niet alle leerlingen hebben deze vraag beantwoord. Weet je zeker dat je door wilt gaan?"
+        );
+
+        if (!confirmed) {
+            event.preventDefault();
+            return;
+        }
+    }
+
     event.target.querySelectorAll("button[type='submit'], button:not([type])")
         .forEach((button) => {
             button.disabled = true;
