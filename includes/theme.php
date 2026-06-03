@@ -230,7 +230,6 @@ if (!function_exists('brainbananas_theme_picker')) {
     {
         ?>
         <div class="bb-theme-picker d-print-none" aria-label="Thema kiezen">
-            <span class="bb-theme-picker__label">Thema</span>
             <button class="bb-theme-button" type="button" data-theme="normal" data-bb-theme-button aria-pressed="false">
                 Normaal
             </button>

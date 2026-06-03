@@ -117,17 +117,33 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
                         Geen quizzen gevonden in <strong>/quizzes</strong>.
                     </div>
 
-                    <a href="upload-quiz.php" class="btn btn-yellow w-100">
-                        Quiz JSON toevoegen
-                    </a>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-2">
+                        <div class="col">
+                            <a href="upload-quiz.php" class="btn btn-yellow w-100 h-100">
+                                Quiz JSON toevoegen
+                            </a>
+                        </div>
 
-                    <a href="manage-quizzes.php" class="btn btn-outline-secondary w-100 mt-3">
-                        Quizzen beheren
-                    </a>
+                        <div class="col">
+                            <a href="manage-quizzes.php" class="btn btn-outline-secondary w-100 h-100">
+                                Quizzen beheren
+                            </a>
+                        </div>
 
-                    <a href="history.php" class="btn btn-outline-primary w-100">
-                        Bekijk opgeslagen sessies
-                    </a>
+                        <div class="col">
+                            <a href="history.php" class="btn btn-outline-primary w-100 h-100">
+                                Bekijk opgeslagen sessies
+                            </a>
+                        </div>
+
+                        <div class="col">
+                            <form method="post" action="api/git-pull.php" class="h-100">
+                                <button class="btn btn-outline-secondary w-100 h-100">
+                                    Update vanaf Git
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
                 <?php else: ?>
 
