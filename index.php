@@ -98,10 +98,6 @@
 
     </div>
 
-    <footer class="text-center text-secondary mt-4">
-        Eric van Heuvelen
-    </footer>
-
 </div>
 </div>
 
