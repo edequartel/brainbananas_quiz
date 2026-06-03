@@ -88,6 +88,12 @@ if (!function_exists('brainbananas_theme_head')) {
                 font-size: calc(16px * var(--bb-font-scale));
             }
 
+            *,
+            *::before,
+            *::after {
+                min-width: 0;
+            }
+
             .container-tight {
                 max-width: var(--bb-content-max-width);
             }
@@ -98,6 +104,7 @@ if (!function_exists('brainbananas_theme_head')) {
                 background: var(--bb-page-bg) !important;
                 color: var(--bb-text);
                 font-weight: var(--bb-font-weight);
+                overflow-wrap: anywhere;
             }
 
             input,
@@ -109,6 +116,45 @@ if (!function_exists('brainbananas_theme_head')) {
             .list-group-item,
             .table {
                 font-weight: var(--bb-font-weight);
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            .display-1,
+            .display-2,
+            .display-3,
+            .display-4,
+            .display-5,
+            .btn,
+            .badge,
+            .form-label,
+            .form-check-label,
+            .card-title,
+            .alert-title {
+                overflow-wrap: anywhere;
+                white-space: normal;
+                line-height: 1.2;
+            }
+
+            .btn,
+            .badge {
+                min-height: max-content;
+            }
+
+            .form-control,
+            .form-select,
+            textarea {
+                min-height: 2.75rem;
+            }
+
+            .row > *,
+            .col,
+            .col-auto {
+                min-width: 0;
             }
 
             .card,
@@ -177,12 +223,12 @@ if (!function_exists('brainbananas_theme_head')) {
             }
 
             .bb-theme-picker {
-                display: flex;
-                flex-wrap: wrap;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
                 gap: .5rem;
-                justify-content: flex-end;
                 align-items: center;
                 margin-bottom: 1rem;
+                width: 100%;
             }
 
             .bb-theme-picker__label {
@@ -198,6 +244,9 @@ if (!function_exists('brainbananas_theme_head')) {
                 font-weight: 700;
                 padding: .45rem .7rem;
                 min-height: 2.5rem;
+                width: 100%;
+                line-height: 1.2;
+                white-space: normal;
             }
 
             .bb-theme-button[data-theme="normal"] {
@@ -246,7 +295,7 @@ if (!function_exists('brainbananas_theme_head')) {
 
             @media (max-width: 575.98px) {
                 .bb-theme-picker {
-                    justify-content: center;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
                 }
 
                 .bb-theme-picker__label {
