@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/includes/theme.php';
+
 function h($value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
@@ -60,12 +62,14 @@ $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['questi
         href="tabler/core/dist/css/tabler.min.css"
         rel="stylesheet"
     >
+    <?php brainbananas_theme_head(); ?>
 </head>
 
 <body class="bg-yellow-lt">
 
 <div class="page">
     <div class="container-xl py-4">
+        <?php brainbananas_theme_picker(); ?>
 
         <div class="row align-items-center mb-4">
             <div class="col">

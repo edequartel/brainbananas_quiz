@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/includes/theme.php';
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -89,12 +91,14 @@ $sessions = array_reverse($sessions);
         href="tabler/core/dist/css/tabler.min.css"
         rel="stylesheet"
     >
+    <?php brainbananas_theme_head(); ?>
 </head>
 
 <body class="bg-light">
 
 <div class="page">
     <div class="container-xl py-4">
+        <?php brainbananas_theme_picker(); ?>
 
         <div class="row align-items-center mb-4">
             <div class="col">

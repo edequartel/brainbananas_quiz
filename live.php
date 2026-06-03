@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/includes/theme.php';
+
 $code = strtoupper(trim($_GET['code'] ?? ''));
 
 if ($code === '') {
@@ -23,6 +25,7 @@ function h($value): string
         href="tabler/core/dist/css/tabler.min.css"
         rel="stylesheet"
     >
+    <?php brainbananas_theme_head(); ?>
 </head>
 
 <body class="bg-yellow-lt">
@@ -30,6 +33,7 @@ function h($value): string
 <div class="page">
 
     <div class="container py-4">
+        <?php brainbananas_theme_picker(); ?>
 
         <div class="text-center mb-4">
 

@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once __DIR__ . '/includes/theme.php';
 require __DIR__ . '/api/supabase.php';
 require __DIR__ . '/api/session-options.php';
 require __DIR__ . '/api/session-cleanup.php';
@@ -93,11 +94,13 @@ if ($currentQuestion >= $totalQuestions) {
             href="tabler/core/dist/css/tabler.min.css"
             rel="stylesheet"
         >
+        <?php brainbananas_theme_head(); ?>
     </head>
 
     <body class="bg-yellow-lt">
     <div class="page page-center">
         <div class="container container-tight py-4">
+            <?php brainbananas_theme_picker(); ?>
             <div class="text-center mb-4">
                 <h1 class="display-5">🍌 BrainBananas</h1>
                 <div class="text-secondary">
@@ -217,12 +220,14 @@ if ($alreadyAnswered && $isLastQuestion) {
         href="tabler/core/dist/css/tabler.min.css"
         rel="stylesheet"
     >
+    <?php brainbananas_theme_head(); ?>
 </head>
 
 <body class="bg-yellow-lt">
 
 <div class="page page-center">
     <div class="container container-tight py-4">
+        <?php brainbananas_theme_picker(); ?>
 
         <div class="text-center mb-4">
             <h1 class="display-5">🍌 BrainBananas</h1>

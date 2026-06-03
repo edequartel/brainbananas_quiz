@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/includes/theme.php'; ?>
 <!doctype html>
 <html lang="nl">
 <head>
@@ -14,12 +15,14 @@
         href="tabler/core/dist/css/tabler.min.css"
         rel="stylesheet"
     >
+    <?php brainbananas_theme_head(); ?>
 </head>
 
 <body class="bg-yellow-lt">
 
 <div class="page page-center">
 <div class="container container-tight py-4">
+    <?php brainbananas_theme_picker(); ?>
 
     <div class="text-center mb-5">
 

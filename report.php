@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/includes/theme.php';
 require __DIR__ . '/api/supabase.php';
 require __DIR__ . '/api/session-options.php';
 
@@ -155,12 +156,14 @@ if (count($studentResults) > 0) {
         href="tabler/core/dist/css/tabler.min.css"
         rel="stylesheet"
     >
+    <?php brainbananas_theme_head(); ?>
 </head>
 
 <body class="bg-yellow-lt">
 
 <div class="page">
     <div class="container-xl py-4">
+        <?php brainbananas_theme_picker(); ?>
 
         <div class="row align-items-center mb-4">
             <div class="col">
