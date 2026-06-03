@@ -32,7 +32,7 @@ function h($value): string
 
 <div class="page">
 
-    <div class="container py-4">
+    <div class="container container-tight py-4">
         <?php brainbananas_theme_picker(); ?>
 
         <div class="text-center mb-4">

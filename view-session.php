@@ -68,7 +68,7 @@ $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['questi
 <body class="bg-yellow-lt">
 
 <div class="page">
-    <div class="container-xl py-4">
+    <div class="container container-tight py-4">
         <?php brainbananas_theme_picker(); ?>
 
         <div class="row align-items-center mb-4">
