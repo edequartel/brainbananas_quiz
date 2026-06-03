@@ -118,6 +118,7 @@ let livePollingInterval = null;
 const connectionStatus = document.getElementById("connection-status");
 const expandedViewToggle = document.getElementById("expanded-view-toggle");
 const expandedFields = document.querySelectorAll("[data-expanded-field]");
+const expandedViewStorageKey = "brainbananasExpandedView";
 
 function isExpandedView() {
     return expandedViewToggle && expandedViewToggle.checked;
@@ -131,7 +132,10 @@ function syncExpandedFields() {
 }
 
 if (expandedViewToggle) {
+    expandedViewToggle.checked = localStorage.getItem(expandedViewStorageKey) === "1";
+
     expandedViewToggle.addEventListener("change", () => {
+        localStorage.setItem(expandedViewStorageKey, expandedViewToggle.checked ? "1" : "0");
         syncExpandedFields();
         loadResults();
     });

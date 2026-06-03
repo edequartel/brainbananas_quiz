@@ -39,7 +39,7 @@ if (!function_exists('brainbananas_theme_head')) {
                 --bb-accent-text: #182433;
                 --bb-font-scale: 1;
                 --bb-font-weight: 400;
-                --bb-content-max-width: 960px;
+                --bb-content-max-width: 1140px;
             }
 
             html[data-bb-theme="large"] {
