@@ -1,4 +1,8 @@
 <?php
+require __DIR__ . '/../includes/teacher-auth.php';
+
+brainbananas_require_teacher_auth('../teacher.php', '../');
+
 require __DIR__ . '/supabase.php';
 require __DIR__ . '/session-options.php';
 require __DIR__ . '/session-cleanup.php';

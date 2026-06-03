@@ -1,6 +1,9 @@
 <?php
 
 require_once __DIR__ . '/includes/theme.php';
+require_once __DIR__ . '/includes/teacher-auth.php';
+
+brainbananas_require_teacher_auth();
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);

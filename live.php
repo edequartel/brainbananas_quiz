@@ -1,6 +1,9 @@
 <?php
 
 require_once __DIR__ . '/includes/theme.php';
+require_once __DIR__ . '/includes/teacher-auth.php';
+
+brainbananas_require_teacher_auth();
 
 $code = strtoupper(trim($_GET['code'] ?? ''));
 

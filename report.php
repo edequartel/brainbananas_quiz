@@ -1,6 +1,10 @@
 <?php
 
 require_once __DIR__ . '/includes/theme.php';
+require_once __DIR__ . '/includes/teacher-auth.php';
+
+brainbananas_require_teacher_auth();
+
 require __DIR__ . '/api/supabase.php';
 require __DIR__ . '/api/session-options.php';
 

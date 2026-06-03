@@ -1,4 +1,7 @@
 <?php
+require __DIR__ . '/../includes/teacher-auth.php';
+
+brainbananas_require_teacher_auth('../teacher.php', '../');
 
 function h($value): string
 {
