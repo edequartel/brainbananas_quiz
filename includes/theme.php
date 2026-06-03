@@ -20,6 +20,7 @@ if (!function_exists('brainbananas_theme_head')) {
                 --bb-accent: #f5b700;
                 --bb-accent-text: #182433;
                 --bb-font-scale: 1;
+                --bb-content-max-width: 960px;
             }
 
             html[data-bb-theme="large"] {
@@ -57,6 +58,10 @@ if (!function_exists('brainbananas_theme_head')) {
 
             html {
                 font-size: calc(16px * var(--bb-font-scale));
+            }
+
+            .container-tight {
+                max-width: var(--bb-content-max-width);
             }
 
             body,
