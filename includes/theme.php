@@ -7,7 +7,11 @@ if (!function_exists('brainbananas_theme_head')) {
         <script>
         (function () {
             const theme = localStorage.getItem("brainbananasTheme") || "normal";
+            const fontSize = localStorage.getItem("brainbananasFontSize") || "small";
+            const fontWeight = localStorage.getItem("brainbananasFontWeight") || "normal";
             document.documentElement.dataset.bbTheme = theme;
+            document.documentElement.dataset.bbFontSize = fontSize;
+            document.documentElement.dataset.bbFontWeight = fontWeight;
         })();
         </script>
         <style>
@@ -20,6 +24,7 @@ if (!function_exists('brainbananas_theme_head')) {
                 --bb-accent: #f5b700;
                 --bb-accent-text: #182433;
                 --bb-font-scale: 1;
+                --bb-font-weight: 400;
                 --bb-content-max-width: 960px;
             }
 
@@ -31,7 +36,6 @@ if (!function_exists('brainbananas_theme_head')) {
                 --bb-border: #8ec5ff;
                 --bb-accent: #0b74de;
                 --bb-accent-text: #ffffff;
-                --bb-font-scale: 1.18;
             }
 
             html[data-bb-theme="contrast"] {
@@ -42,7 +46,6 @@ if (!function_exists('brainbananas_theme_head')) {
                 --bb-border: #ffff00;
                 --bb-accent: #ffff00;
                 --bb-accent-text: #000000;
-                --bb-font-scale: 1.24;
             }
 
             html[data-bb-theme="dark"] {
@@ -53,7 +56,22 @@ if (!function_exists('brainbananas_theme_head')) {
                 --bb-border: #5eead4;
                 --bb-accent: #5eead4;
                 --bb-accent-text: #0f172a;
-                --bb-font-scale: 1.12;
+            }
+
+            html[data-bb-font-size="small"] {
+                --bb-font-scale: 1;
+            }
+
+            html[data-bb-font-size="large"] {
+                --bb-font-scale: 1.18;
+            }
+
+            html[data-bb-font-size="largest"] {
+                --bb-font-scale: 1.34;
+            }
+
+            html[data-bb-font-weight="bold"] {
+                --bb-font-weight: 700;
             }
 
             html {
@@ -69,6 +87,18 @@ if (!function_exists('brainbananas_theme_head')) {
             body.bg-light {
                 background: var(--bb-page-bg) !important;
                 color: var(--bb-text);
+                font-weight: var(--bb-font-weight);
+            }
+
+            input,
+            select,
+            textarea,
+            .form-control,
+            .form-select,
+            .form-check-label,
+            .list-group-item,
+            .table {
+                font-weight: var(--bb-font-weight);
             }
 
             .card,
@@ -186,6 +216,18 @@ if (!function_exists('brainbananas_theme_head')) {
                 color: #ffffff;
             }
 
+            .bb-theme-button[data-font-size="small"] {
+                font-size: 1em;
+            }
+
+            .bb-theme-button[data-font-size="large"] {
+                font-size: 1.15em;
+            }
+
+            .bb-theme-button[data-font-size="largest"] {
+                font-size: 1.3em;
+            }
+
             .bb-theme-button[aria-pressed="true"] {
                 outline: 3px solid var(--bb-accent);
                 outline-offset: 2px;
@@ -205,13 +247,15 @@ if (!function_exists('brainbananas_theme_head')) {
         </style>
         <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const buttons = document.querySelectorAll("[data-bb-theme-button]");
+            const themeButtons = document.querySelectorAll("[data-bb-theme-button]");
+            const fontSizeButtons = document.querySelectorAll("[data-bb-font-size-button]");
+            const fontWeightButton = document.querySelector("[data-bb-font-weight-button]");
 
             function applyTheme(theme) {
                 document.documentElement.dataset.bbTheme = theme;
                 localStorage.setItem("brainbananasTheme", theme);
 
-                buttons.forEach((button) => {
+                themeButtons.forEach((button) => {
                     button.setAttribute(
                         "aria-pressed",
                         button.dataset.theme === theme ? "true" : "false"
@@ -219,11 +263,49 @@ if (!function_exists('brainbananas_theme_head')) {
                 });
             }
 
-            buttons.forEach((button) => {
+            function applyFontSize(fontSize) {
+                document.documentElement.dataset.bbFontSize = fontSize;
+                localStorage.setItem("brainbananasFontSize", fontSize);
+
+                fontSizeButtons.forEach((button) => {
+                    button.setAttribute(
+                        "aria-pressed",
+                        button.dataset.fontSize === fontSize ? "true" : "false"
+                    );
+                });
+            }
+
+            function applyFontWeight(fontWeight) {
+                document.documentElement.dataset.bbFontWeight = fontWeight;
+                localStorage.setItem("brainbananasFontWeight", fontWeight);
+
+                if (fontWeightButton) {
+                    fontWeightButton.setAttribute(
+                        "aria-pressed",
+                        fontWeight === "bold" ? "true" : "false"
+                    );
+                    fontWeightButton.textContent = fontWeight === "bold" ? "Vet" : "Normaal";
+                }
+            }
+
+            themeButtons.forEach((button) => {
                 button.addEventListener("click", () => applyTheme(button.dataset.theme));
             });
 
+            fontSizeButtons.forEach((button) => {
+                button.addEventListener("click", () => applyFontSize(button.dataset.fontSize));
+            });
+
+            if (fontWeightButton) {
+                fontWeightButton.addEventListener("click", () => {
+                    const current = document.documentElement.dataset.bbFontWeight || "normal";
+                    applyFontWeight(current === "bold" ? "normal" : "bold");
+                });
+            }
+
             applyTheme(localStorage.getItem("brainbananasTheme") || "normal");
+            applyFontSize(localStorage.getItem("brainbananasFontSize") || "small");
+            applyFontWeight(localStorage.getItem("brainbananasFontWeight") || "normal");
         });
         </script>
         <?php
@@ -246,6 +328,18 @@ if (!function_exists('brainbananas_theme_picker')) {
             </button>
             <button class="bb-theme-button" type="button" data-theme="dark" data-bb-theme-button aria-pressed="false">
                 Donker
+            </button>
+            <button class="bb-theme-button" type="button" data-font-size="small" data-bb-font-size-button aria-pressed="false">
+                Klein
+            </button>
+            <button class="bb-theme-button" type="button" data-font-size="large" data-bb-font-size-button aria-pressed="false">
+                Groot
+            </button>
+            <button class="bb-theme-button" type="button" data-font-size="largest" data-bb-font-size-button aria-pressed="false">
+                Grootst
+            </button>
+            <button class="bb-theme-button" type="button" data-bb-font-weight-button aria-pressed="false">
+                Normaal
             </button>
         </div>
         <?php
