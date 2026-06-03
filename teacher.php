@@ -68,8 +68,8 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
 
 <body class="bg-yellow-lt">
 
-<div class="page page-center">
-    <div class="container container-tight py-5">
+<div class="page">
+    <div class="container-xl py-4">
         <?php brainbananas_theme_picker(); ?>
 
         <div class="text-center mb-4">
