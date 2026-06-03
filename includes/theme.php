@@ -22,6 +22,10 @@ if (!function_exists('brainbananas_theme_head')) {
                 "--bb-font-scale",
                 fontScales[fontSize] || fontScales.small
             );
+            document.documentElement.style.setProperty(
+                "--tblr-body-font-size",
+                "calc(1rem * " + (fontScales[fontSize] || fontScales.small) + ")"
+            );
         })();
         </script>
         <style>
@@ -86,6 +90,8 @@ if (!function_exists('brainbananas_theme_head')) {
 
             html {
                 font-size: calc(16px * var(--bb-font-scale));
+                --tblr-body-font-size: calc(1rem * var(--bb-font-scale));
+                --tblr-body-line-height: 1.45;
             }
 
             *,
@@ -103,18 +109,26 @@ if (!function_exists('brainbananas_theme_head')) {
             body.bg-light {
                 background: var(--bb-page-bg) !important;
                 color: var(--bb-text);
+                font-size: calc(1rem * var(--bb-font-scale));
                 font-weight: var(--bb-font-weight);
+                line-height: 1.45;
                 overflow-wrap: anywhere;
             }
 
             input,
             select,
             textarea,
+            button,
             .form-control,
             .form-select,
             .form-check-label,
             .list-group-item,
-            .table {
+            .table,
+            .btn,
+            .badge,
+            .alert,
+            .card {
+                font-size: inherit;
                 font-weight: var(--bb-font-weight);
             }
 
@@ -142,6 +156,8 @@ if (!function_exists('brainbananas_theme_head')) {
 
             .btn,
             .badge {
+                overflow-wrap: normal;
+                word-break: normal;
                 min-height: max-content;
             }
 
@@ -227,8 +243,29 @@ if (!function_exists('brainbananas_theme_head')) {
                 grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
                 gap: .5rem;
                 align-items: center;
-                margin-bottom: 1rem;
                 width: 100%;
+            }
+
+            .bb-accessibility-panel {
+                margin-bottom: 1rem;
+            }
+
+            .bb-accessibility-toggle {
+                display: block;
+                margin-left: auto;
+                margin-bottom: .5rem;
+            }
+
+            .bb-accessibility-panel__body {
+                display: none;
+                padding: .75rem;
+                border: 1px solid var(--bb-border);
+                border-radius: .5rem;
+                background-color: var(--bb-card-bg);
+            }
+
+            .bb-accessibility-panel.is-open .bb-accessibility-panel__body {
+                display: block;
             }
 
             .bb-theme-picker__label {
@@ -247,6 +284,8 @@ if (!function_exists('brainbananas_theme_head')) {
                 width: 100%;
                 line-height: 1.2;
                 white-space: normal;
+                overflow-wrap: normal;
+                word-break: normal;
             }
 
             .bb-theme-button[data-theme="normal"] {
@@ -309,6 +348,8 @@ if (!function_exists('brainbananas_theme_head')) {
             const themeButtons = document.querySelectorAll("[data-bb-theme-button]");
             const fontSizeButtons = document.querySelectorAll("[data-bb-font-size-button]");
             const fontWeightButton = document.querySelector("[data-bb-font-weight-button]");
+            const accessibilityPanel = document.querySelector("[data-bb-accessibility-panel]");
+            const accessibilityToggle = document.querySelector("[data-bb-accessibility-toggle]");
 
             function applyTheme(theme) {
                 document.documentElement.dataset.bbTheme = theme;
@@ -333,6 +374,10 @@ if (!function_exists('brainbananas_theme_head')) {
                 document.documentElement.style.setProperty(
                     "--bb-font-scale",
                     fontScales[fontSize] || fontScales.small
+                );
+                document.documentElement.style.setProperty(
+                    "--tblr-body-font-size",
+                    "calc(1rem * " + (fontScales[fontSize] || fontScales.small) + ")"
                 );
                 localStorage.setItem("brainbananasFontSize", fontSize);
 
@@ -372,6 +417,14 @@ if (!function_exists('brainbananas_theme_head')) {
                 });
             }
 
+            if (accessibilityPanel && accessibilityToggle) {
+                accessibilityToggle.addEventListener("click", () => {
+                    const isOpen = accessibilityPanel.classList.toggle("is-open");
+                    accessibilityToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+                    accessibilityToggle.textContent = isOpen ? "Instellingen sluiten" : "Weergave instellen";
+                });
+            }
+
             applyTheme(localStorage.getItem("brainbananasTheme") || "normal");
             applyFontSize(localStorage.getItem("brainbananasFontSize") || "small");
             applyFontWeight(localStorage.getItem("brainbananasFontWeight") || "normal");
@@ -385,31 +438,44 @@ if (!function_exists('brainbananas_theme_picker')) {
     function brainbananas_theme_picker(): void
     {
         ?>
-        <div class="bb-theme-picker d-print-none" aria-label="Thema kiezen">
-            <button class="bb-theme-button" type="button" data-theme="normal" data-bb-theme-button aria-pressed="false">
-                Normaal
+        <div class="bb-accessibility-panel d-print-none" data-bb-accessibility-panel>
+            <button
+                class="btn btn-outline-secondary bb-accessibility-toggle"
+                type="button"
+                data-bb-accessibility-toggle
+                aria-expanded="false"
+            >
+                Weergave instellen
             </button>
-            <button class="bb-theme-button" type="button" data-theme="large" data-bb-theme-button aria-pressed="false">
-                Helder
-            </button>
-            <button class="bb-theme-button" type="button" data-theme="contrast" data-bb-theme-button aria-pressed="false">
-                Hoog contrast
-            </button>
-            <button class="bb-theme-button" type="button" data-theme="dark" data-bb-theme-button aria-pressed="false">
-                Donker
-            </button>
-            <button class="bb-theme-button" type="button" data-font-size="small" data-bb-font-size-button aria-pressed="false">
-                Klein
-            </button>
-            <button class="bb-theme-button" type="button" data-font-size="large" data-bb-font-size-button aria-pressed="false">
-                Groot
-            </button>
-            <button class="bb-theme-button" type="button" data-font-size="largest" data-bb-font-size-button aria-pressed="false">
-                Grootst
-            </button>
-            <button class="bb-theme-button" type="button" data-bb-font-weight-button aria-pressed="false">
-                Normaal
-            </button>
+
+            <div class="bb-accessibility-panel__body">
+                <div class="bb-theme-picker" aria-label="Weergave kiezen">
+                    <button class="bb-theme-button" type="button" data-theme="normal" data-bb-theme-button aria-pressed="false">
+                        Normaal
+                    </button>
+                    <button class="bb-theme-button" type="button" data-theme="large" data-bb-theme-button aria-pressed="false">
+                        Helder
+                    </button>
+                    <button class="bb-theme-button" type="button" data-theme="contrast" data-bb-theme-button aria-pressed="false">
+                        Hoog contrast
+                    </button>
+                    <button class="bb-theme-button" type="button" data-theme="dark" data-bb-theme-button aria-pressed="false">
+                        Donker
+                    </button>
+                    <button class="bb-theme-button" type="button" data-font-size="small" data-bb-font-size-button aria-pressed="false">
+                        Klein
+                    </button>
+                    <button class="bb-theme-button" type="button" data-font-size="large" data-bb-font-size-button aria-pressed="false">
+                        Groot
+                    </button>
+                    <button class="bb-theme-button" type="button" data-font-size="largest" data-bb-font-size-button aria-pressed="false">
+                        Grootst
+                    </button>
+                    <button class="bb-theme-button" type="button" data-bb-font-weight-button aria-pressed="false">
+                        Normaal
+                    </button>
+                </div>
+            </div>
         </div>
         <?php
     }
