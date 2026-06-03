@@ -270,19 +270,15 @@ async function loadResults() {
 
                 <div class="card-body text-center">
 
-                    ${
-                        isExpandedView()
-                        ? `<div class="text-secondary">
-                               ${escapeHtml(data.quiz_title)}
-                           </div>
+                    <div class="text-secondary">
+                        ${escapeHtml(data.quiz_title)}
+                    </div>
 
-                           <h2 class="mt-2">
-                               Vraag ${data.current_question + 1}
-                               /
-                               ${data.total_questions}
-                           </h2>`
-                        : ``
-                    }
+                    <h2 class="mt-2">
+                        Vraag ${data.current_question + 1}
+                        /
+                        ${data.total_questions}
+                    </h2>
 
                     <h1 class="my-4">
                         ${escapeHtml(q.question)}
@@ -298,50 +294,46 @@ async function loadResults() {
                         </ul>
                     </div>
 
+                    <div class="alert alert-info">
+                        ${data.answered_count}
+                        of
+                        ${data.player_count}
+                        leerlingen hebben geantwoord
+                    </div>
+
+                    <form method="post" action="api/next-question.php">
+
+                        <input
+                            type="hidden"
+                            name="code"
+                            value="${escapeHtml(code)}"
+                        >
+
+                        <div class="d-flex gap-2 justify-content-center flex-wrap">
+                            <button
+                                class="btn btn-yellow btn-lg"
+                                name="action"
+                                value="next"
+                            >
+                                ${data.is_last_question ? "Quiz afronden" : "Volgende vraag"}
+                            </button>
+
+                            <button
+                                class="btn btn-outline-secondary btn-lg"
+                                name="action"
+                                value="skip"
+                            >
+                                Sla vraag over
+                            </button>
+                        </div>
+
+                    </form>
+
                     ${
-                        isExpandedView()
-                        ? `<div class="alert alert-info">
-                               ${data.answered_count}
-                               of
-                               ${data.player_count}
-                               leerlingen hebben geantwoord
-                           </div>
-
-                           <form method="post" action="api/next-question.php">
-
-                               <input
-                                   type="hidden"
-                                   name="code"
-                                   value="${escapeHtml(code)}"
-                               >
-
-                               <div class="d-flex gap-2 justify-content-center flex-wrap">
-                                   <button
-                                       class="btn btn-yellow btn-lg"
-                                       name="action"
-                                       value="next"
-                                   >
-                                       ${data.is_last_question ? "Quiz afronden" : "Volgende vraag"}
-                                   </button>
-
-                                   <button
-                                       class="btn btn-outline-secondary btn-lg"
-                                       name="action"
-                                       value="skip"
-                                   >
-                                       Sla vraag over
-                                   </button>
-                               </div>
-
-                           </form>
-
-                           ${
-                               data.is_last_question
-                               ? `<div class="alert alert-warning mt-3">
-                                      Dit is de laatste vraag.
-                                  </div>`
-                               : ``
-                           }`
+                        data.is_last_question
+                        ? `<div class="alert alert-warning mt-3">
+                               Dit is de laatste vraag.
+                           </div>`
                         : ``
                     }
 
