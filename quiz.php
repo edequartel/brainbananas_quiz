@@ -348,6 +348,7 @@ if ($alreadyAnswered && $isLastQuestion) {
                         <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
 
                             <?php foreach ($question['answers'] as $index => $answer): ?>
+                                <?php $answerLabel = chr(65 + $index); ?>
 
                                 <label class="form-selectgroup-item flex-fill">
                                     <input
@@ -363,8 +364,13 @@ if ($alreadyAnswered && $isLastQuestion) {
                                             <span class="form-selectgroup-check"></span>
                                         </div>
 
-                                        <div>
-                                            <?= h($answer) ?>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-secondary text-secondary-fg">
+                                                <?= h($answerLabel) ?>
+                                            </span>
+                                            <span>
+                                                <?= h($answer) ?>
+                                            </span>
                                         </div>
                                     </div>
                                 </label>

@@ -194,11 +194,17 @@ async function loadResults() {
     const q = data.question;
     const answerChoices = (q.answers || []).map((answer, index) => {
         const isCorrect = Number(q.correct) === index;
+        const answerLabel = String.fromCharCode(65 + index);
 
         return `
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>
-                    ${escapeHtml(answer)}
+                <span class="d-flex align-items-center gap-2">
+                    <span class="badge bg-secondary text-secondary-fg">
+                        ${answerLabel}
+                    </span>
+                    <span>
+                        ${escapeHtml(answer)}
+                    </span>
                 </span>
 
                 ${
