@@ -288,15 +288,19 @@ async function loadResults() {
                         ${escapeHtml(q.question)}
                     </h1>
 
-                    <div class="text-start mb-4">
-                        <div class="fw-bold mb-2">
-                            Antwoordkeuzes
-                        </div>
+                    ${
+                        isExpandedView()
+                        ? `<div class="text-start mb-4">
+                               <div class="fw-bold mb-2">
+                                   Antwoordkeuzes
+                               </div>
 
-                        <ul class="list-group">
-                            ${answerChoices}
-                        </ul>
-                    </div>
+                               <ul class="list-group">
+                                   ${answerChoices}
+                               </ul>
+                           </div>`
+                        : ``
+                    }
 
                     ${
                         isExpandedView()
