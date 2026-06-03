@@ -9,9 +9,19 @@ if (!function_exists('brainbananas_theme_head')) {
             const theme = localStorage.getItem("brainbananasTheme") || "normal";
             const fontSize = localStorage.getItem("brainbananasFontSize") || "small";
             const fontWeight = localStorage.getItem("brainbananasFontWeight") || "normal";
+            const fontScales = {
+                small: "1",
+                large: "1.28",
+                largest: "1.55"
+            };
+
             document.documentElement.dataset.bbTheme = theme;
             document.documentElement.dataset.bbFontSize = fontSize;
             document.documentElement.dataset.bbFontWeight = fontWeight;
+            document.documentElement.style.setProperty(
+                "--bb-font-scale",
+                fontScales[fontSize] || fontScales.small
+            );
         })();
         </script>
         <style>
@@ -63,11 +73,11 @@ if (!function_exists('brainbananas_theme_head')) {
             }
 
             html[data-bb-font-size="large"] {
-                --bb-font-scale: 1.18;
+                --bb-font-scale: 1.28;
             }
 
             html[data-bb-font-size="largest"] {
-                --bb-font-scale: 1.34;
+                --bb-font-scale: 1.55;
             }
 
             html[data-bb-font-weight="bold"] {
@@ -264,7 +274,17 @@ if (!function_exists('brainbananas_theme_head')) {
             }
 
             function applyFontSize(fontSize) {
+                const fontScales = {
+                    small: "1",
+                    large: "1.28",
+                    largest: "1.55"
+                };
+
                 document.documentElement.dataset.bbFontSize = fontSize;
+                document.documentElement.style.setProperty(
+                    "--bb-font-scale",
+                    fontScales[fontSize] || fontScales.small
+                );
                 localStorage.setItem("brainbananasFontSize", fontSize);
 
                 fontSizeButtons.forEach((button) => {
