@@ -8,9 +8,11 @@ function brainbananas_config(): array
     $paths = [];
 
     $paths[] = __DIR__ . '/../private/supabase_brainbananas.php';
+    $paths[] = __DIR__ . '/../private brainbananas/supabase_brainbananas.php';
 
     if ($home !== '') {
         $paths[] = $home . '/private/supabase_brainbananas.php';
+        $paths[] = $home . '/private brainbananas/supabase_brainbananas.php';
     }
 
     if ($documentRoot !== '') {
