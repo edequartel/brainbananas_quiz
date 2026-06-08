@@ -1,0 +1,8 @@
+{
+    "name": "brainbananas/quiz",
+    "description": "BrainBananas quiz application",
+    "license": "proprietary",
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    }
+}

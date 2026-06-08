@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/includes/theme.php';
 require_once __DIR__ . '/includes/teacher-auth.php';
+require_once __DIR__ . '/includes/pdf.php';
 
 brainbananas_require_teacher_auth();
 
@@ -148,6 +149,92 @@ if (count($studentResults) > 0) {
     $classAverage = round($totalPercent / count($studentResults));
 }
 
+if (isset($_GET['pdf'])) {
+    ob_start();
+    ?>
+    <h1>BrainBananas Rapport</h1>
+    <div class="muted">
+        Sessie <?= h($code) ?> · <?= h($quiz['title'] ?? $quizFile) ?>
+    </div>
+
+    <table class="summary">
+        <tr>
+            <td><span class="value"><?= count($studentResults) ?></span>Leerlingen</td>
+            <td><span class="value"><?= $countedQuestions ?></span>Meetellende vragen</td>
+            <td><span class="value"><?= $classAverage ?>%</span>Klasgemiddelde</td>
+        </tr>
+    </table>
+
+    <h2>Resultaten per leerling</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Leerling</th>
+            <th>Goed</th>
+            <th>Beantwoord</th>
+            <th>Cijfer</th>
+            <th>Resultaat</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($studentResults as $result): ?>
+            <tr>
+                <td><?= h($result['student_name']) ?></td>
+                <td><?= $result['correct'] ?> / <?= $countedQuestions ?></td>
+                <td><?= $result['answered'] ?> / <?= $countedQuestions ?></td>
+                <td><?= h(grade_from_percentage($result['percentage'])) ?></td>
+                <td><?= $result['percentage'] ?>%</td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <?php foreach ($studentResults as $result): ?>
+        <div class="page-break"></div>
+        <h2>
+            <?= h($result['student_name']) ?>
+            · <?= $result['correct'] ?> / <?= $countedQuestions ?>
+            · cijfer <?= h(grade_from_percentage($result['percentage'])) ?>
+        </h2>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Vraag</th>
+                <th>Gegeven antwoord</th>
+                <th>Juiste antwoord</th>
+                <th>Resultaat</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($result['answers'] as $index => $answer): ?>
+                <tr>
+                    <td><?= $index + 1 ?></td>
+                    <td><?= h($answer['question']) ?></td>
+                    <td><?= h($answer['given_answer']) ?></td>
+                    <td><?= h($answer['correct_answer']) ?></td>
+                    <td>
+                        <?php if (!$answer['answered']): ?>
+                            <span class="badge neutral">Niet beantwoord</span>
+                        <?php elseif ($answer['is_correct']): ?>
+                            <span class="badge good">Goed</span>
+                        <?php else: ?>
+                            <span class="badge bad">Volgende keer beter</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endforeach; ?>
+    <?php
+    $pdfBody = ob_get_clean();
+    brainbananas_stream_pdf(
+        brainbananas_pdf_document('BrainBananas Rapport', $pdfBody),
+        'brainbananas-rapport-' . strtolower($code) . '.pdf'
+    );
+}
+
 ?>
 <!doctype html>
 <html lang="nl">
@@ -178,9 +265,9 @@ if (count($studentResults) > 0) {
             </div>
 
             <div class="col-auto d-print-none">
-                <button onclick="window.print()" class="btn btn-yellow">
-                    Print / opslaan als PDF
-                </button>
+                <a href="report.php?code=<?= urlencode($code) ?>&pdf=1" class="btn btn-yellow">
+                    Download PDF
+                </a>
 
                 <a
                     href="live.php?code=<?= urlencode($code) ?>"

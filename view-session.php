@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/includes/theme.php';
 require_once __DIR__ . '/includes/teacher-auth.php';
+require_once __DIR__ . '/includes/pdf.php';
 
 brainbananas_require_teacher_auth();
 
@@ -53,6 +54,93 @@ if (!$data) {
 $metadata = $data['metadata'];
 $students = $data['students'];
 $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['question_count'];
+
+if (isset($_GET['pdf'])) {
+    ob_start();
+    ?>
+    <h1>Opgeslagen BrainBananas-sessie</h1>
+    <div class="muted">
+        <?= h($metadata['quiz_title']) ?> · <?= h($metadata['session_code']) ?>
+        · <?= h(format_session_date($metadata['archived_at_iso'] ?? $metadata['archived_at'] ?? '')) ?>
+    </div>
+
+    <table class="summary">
+        <tr>
+            <td><span class="value"><?= h($metadata['student_count']) ?></span>Leerlingen</td>
+            <td><span class="value"><?= h($countedQuestionCount) ?></span>Meetellende vragen</td>
+            <td><span class="value"><?= h($metadata['quiz_file']) ?></span>Quizbestand</td>
+        </tr>
+    </table>
+
+    <h2>Leerlingenoverzicht</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Leerling</th>
+            <th>Goed</th>
+            <th>Beantwoord</th>
+            <th>Cijfer</th>
+            <th>Resultaat</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($students as $student): ?>
+            <tr>
+                <td><?= h($student['student_name']) ?></td>
+                <td><?= h($student['correct']) ?> / <?= h($countedQuestionCount) ?></td>
+                <td><?= h($student['answered']) ?> / <?= h($countedQuestionCount) ?></td>
+                <td><?= h(grade_from_percentage($student['percentage'])) ?></td>
+                <td><?= h($student['percentage']) ?>%</td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <?php foreach ($students as $student): ?>
+        <div class="page-break"></div>
+        <h2>
+            <?= h($student['student_name']) ?>
+            · <?= h($student['correct']) ?> / <?= h($countedQuestionCount) ?>
+            · cijfer <?= h(grade_from_percentage($student['percentage'])) ?>
+        </h2>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Vraag</th>
+                <th>Gegeven antwoord</th>
+                <th>Juiste antwoord</th>
+                <th>Resultaat</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($student['answers'] as $answer): ?>
+                <tr>
+                    <td><?= h($answer['question_index'] + 1) ?></td>
+                    <td><?= h($answer['question']) ?></td>
+                    <td><?= h($answer['given_answer'] ?? '-') ?></td>
+                    <td><?= h($answer['correct_answer']) ?></td>
+                    <td>
+                        <?php if (empty($answer['answered'])): ?>
+                            <span class="badge neutral">Niet beantwoord</span>
+                        <?php elseif (!empty($answer['is_correct'])): ?>
+                            <span class="badge good">Goed</span>
+                        <?php else: ?>
+                            <span class="badge bad">Volgende keer beter</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endforeach; ?>
+    <?php
+    $pdfBody = ob_get_clean();
+    brainbananas_stream_pdf(
+        brainbananas_pdf_document('Opgeslagen BrainBananas-sessie', $pdfBody),
+        'brainbananas-sessie-' . strtolower((string)$metadata['session_code']) . '.pdf'
+    );
+}
 ?>
 <!doctype html>
 <html lang="nl">
@@ -84,9 +172,9 @@ $countedQuestionCount = $metadata['counted_question_count'] ?? $metadata['questi
             </div>
 
             <div class="col-auto d-print-none">
-                <button onclick="window.print()" class="btn btn-yellow">
-                    Print / PDF
-                </button>
+                <a href="view-session.php?file=<?= urlencode($file) ?>&pdf=1" class="btn btn-yellow">
+                    Download PDF
+                </a>
 
                 <a href="history.php" class="btn btn-outline-secondary">
                     Terug
