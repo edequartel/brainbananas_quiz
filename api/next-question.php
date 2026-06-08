@@ -27,6 +27,11 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
 }
 
 $session = $sessionResult['data'][0];
+$sessionOptions = brainbananas_read_session_options($code);
+
+if (!empty($sessionOptions['self_paced'])) {
+    die('Leerlingen gaan in deze sessie zelfstandig naar de volgende vraag.');
+}
 
 $quizFile = basename($session['quiz_file']);
 $quizPath = __DIR__ . '/../quizzes/' . $quizFile;

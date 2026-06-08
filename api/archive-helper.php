@@ -171,7 +171,8 @@ function brainbananas_archive_session(string $code): array
             'question_count' => $totalQuestions,
             'counted_question_count' => $countedQuestions,
             'skipped_questions' => $skippedQuestions,
-            'show_answer_feedback' => !empty($sessionOptions['show_answer_feedback'])
+            'show_answer_feedback' => !empty($sessionOptions['show_answer_feedback']),
+            'self_paced' => !empty($sessionOptions['self_paced'])
         ],
         'quiz' => $quiz,
         'students' => array_values($studentResults)

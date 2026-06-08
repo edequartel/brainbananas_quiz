@@ -9,6 +9,7 @@ function brainbananas_default_session_options(): array
 {
     return [
         'show_answer_feedback' => false,
+        'self_paced' => false,
         'skipped_questions' => []
     ];
 }

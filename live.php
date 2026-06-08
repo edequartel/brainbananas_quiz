@@ -191,6 +191,77 @@ async function loadResults() {
         return;
     }
 
+    if (data.self_paced) {
+        let progressRows = "";
+
+        data.progress_rows.forEach(row => {
+            const percentage = data.total_questions > 0
+                ? Math.round((row.answered_count / data.total_questions) * 100)
+                : 0;
+            const statusBadge = row.is_complete
+                ? `<span class="badge bg-green text-green-fg">Afgerond</span>`
+                : `<span class="badge bg-yellow text-yellow-fg">Bezig</span>`;
+
+            progressRows += `
+                <tr>
+                    <td class="fw-bold">${escapeHtml(row.student_name)}</td>
+                    <td>${statusBadge}</td>
+                    <td>${row.answered_count} / ${data.total_questions}</td>
+                    <td>${row.correct_count}</td>
+                    <td style="min-width: 160px">
+                        <div class="progress progress-sm">
+                            <div class="progress-bar bg-yellow" style="width: ${percentage}%"></div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        if (progressRows === "") {
+            progressRows = `
+                <tr>
+                    <td colspan="5" class="text-center text-secondary py-4">
+                        Er zijn nog geen leerlingen aangesloten.
+                    </td>
+                </tr>
+            `;
+        }
+
+        document.getElementById("live-area").innerHTML = `
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <div class="text-secondary">${escapeHtml(data.quiz_title)}</div>
+                    <h2 class="mt-2">Zelfstandige sessie</h2>
+                    <div class="alert alert-info mt-3 mb-0">
+                        Leerlingen gaan zelf door naar de volgende vraag.
+                        ${data.completed_count} van ${data.player_count} leerlingen zijn klaar.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Voortgang per leerling</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-vcenter card-table">
+                        <thead>
+                            <tr>
+                                <th>Leerling</th>
+                                <th>Status</th>
+                                <th>Beantwoord</th>
+                                <th>Goed</th>
+                                <th>Voortgang</th>
+                            </tr>
+                        </thead>
+                        <tbody>${progressRows}</tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
     if (data.quiz_finished) {
         document.getElementById("live-area").innerHTML = `
             <div class="card">

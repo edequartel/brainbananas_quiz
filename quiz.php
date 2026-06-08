@@ -36,8 +36,6 @@ if (!in_array(($session['status'] ?? ''), ['active', 'finished'], true)) {
     die('Sessie is niet actief.');
 }
 
-$currentQuestion = intval($session['current_question']);
-
 $quizFile = basename($session['quiz_file']);
 $quizPath = __DIR__ . '/quizzes/' . $quizFile;
 
@@ -49,6 +47,44 @@ $quiz = json_decode(file_get_contents($quizPath), true);
 $totalQuestions = count($quiz['questions']);
 $sessionOptions = brainbananas_read_session_options($code);
 $teacherSkippedQuestions = brainbananas_skipped_questions($sessionOptions);
+$selfPaced = !empty($sessionOptions['self_paced']);
+$currentQuestion = intval($session['current_question']);
+
+if ($selfPaced) {
+    $allStudentAnswersResult = supabase_request(
+        'GET',
+        'brainbananas_answers' .
+        '?session_code=eq.' . urlencode($code) .
+        '&student_name=eq.' . urlencode($student) .
+        '&select=*'
+    );
+
+    $answeredQuestionIndexes = [];
+
+    foreach (($allStudentAnswersResult['data'] ?? []) as $answer) {
+        $answeredQuestionIndexes[intval($answer['question_index'])] = true;
+    }
+
+    $currentQuestion = $totalQuestions;
+
+    foreach (array_keys($quiz['questions']) as $questionIndex) {
+        if (!isset($answeredQuestionIndexes[$questionIndex])) {
+            $currentQuestion = $questionIndex;
+            break;
+        }
+    }
+
+    $requestedQuestion = filter_input(INPUT_GET, 'question', FILTER_VALIDATE_INT);
+
+    if (
+        $requestedQuestion !== false &&
+        $requestedQuestion !== null &&
+        isset($quiz['questions'][$requestedQuestion]) &&
+        isset($answeredQuestionIndexes[$requestedQuestion])
+    ) {
+        $currentQuestion = $requestedQuestion;
+    }
+}
 
 if ($currentQuestion >= $totalQuestions) {
     $answersResult = supabase_request(
@@ -264,7 +300,7 @@ if ($alreadyAnswered && $isLastQuestion) {
                 <?php if ($alreadyAnswered): ?>
 
                     <div class="alert alert-success">
-                        Je antwoord is opgeslagen. Wacht op de volgende vraag.
+                        Je antwoord is opgeslagen.
                     </div>
 
                     <?php if ($finalGrade !== null): ?>
@@ -340,6 +376,16 @@ if ($alreadyAnswered && $isLastQuestion) {
                         </div>
                     <?php endif; ?>
 
+                    <?php if ($selfPaced): ?>
+                        <a href="quiz.php" class="btn btn-yellow btn-lg w-100 mt-4">
+                            <?= $isLastQuestion ? 'Bekijk eindresultaat' : 'Volgende vraag' ?>
+                        </a>
+                    <?php else: ?>
+                        <div class="alert alert-info mt-3">
+                            Wacht tot de leraar naar de volgende vraag gaat.
+                        </div>
+                    <?php endif; ?>
+
                 <?php else: ?>
 
                     <form method="post" action="api/submit.php">
@@ -391,7 +437,9 @@ if ($alreadyAnswered && $isLastQuestion) {
                     </form>
 
                     <div class="alert alert-info mt-3">
-                        Als de leraar doorgaat, ga je automatisch naar de volgende vraag.
+                        <?= $selfPaced
+                            ? 'Na je antwoord kun je zelf doorgaan naar de volgende vraag.'
+                            : 'Als de leraar doorgaat, ga je automatisch naar de volgende vraag.' ?>
                     </div>
 
                 <?php endif; ?>
@@ -405,6 +453,7 @@ if ($alreadyAnswered && $isLastQuestion) {
 <script>
 const sessionCode = <?= json_encode($code) ?>;
 const visibleQuestion = <?= json_encode($currentQuestion) ?>;
+const selfPaced = <?= json_encode($selfPaced) ?>;
 let questionPollingInterval = null;
 
 async function checkQuestionChange() {
@@ -513,7 +562,9 @@ async function connectQuestionRealtime() {
     }
 }
 
-connectQuestionRealtime();
+if (!selfPaced) {
+    connectQuestionRealtime();
+}
 
 document.addEventListener("submit", (event) => {
     event.target.querySelectorAll("button[type='submit'], button:not([type])")

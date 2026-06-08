@@ -2,6 +2,7 @@
 session_start();
 
 require __DIR__ . '/supabase.php';
+require __DIR__ . '/session-options.php';
 
 $student = $_SESSION['student'] ?? '';
 $code = $_SESSION['code'] ?? '';
@@ -27,8 +28,10 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
 }
 
 $session = $sessionResult['data'][0];
+$sessionOptions = brainbananas_read_session_options($code);
+$selfPaced = !empty($sessionOptions['self_paced']);
 
-if (intval($session['current_question']) !== $questionIndex) {
+if (!$selfPaced && intval($session['current_question']) !== $questionIndex) {
     die('Deze vraag is niet meer actief.');
 }
 
@@ -41,13 +44,50 @@ if (!file_exists($quizPath)) {
 
 $quiz = json_decode(file_get_contents($quizPath), true);
 
+if (!isset($quiz['questions'][$questionIndex]['answers'][$answerIndex])) {
+    die('Ongeldig antwoord.');
+}
+
+$existingEndpoint =
+    'brainbananas_answers?session_code=eq.' . urlencode($code) .
+    '&student_name=eq.' . urlencode($student);
+
+if ($selfPaced) {
+    $studentAnswersResult = supabase_request(
+        'GET',
+        $existingEndpoint . '&select=question_index'
+    );
+    $answeredQuestionIndexes = [];
+
+    foreach (($studentAnswersResult['data'] ?? []) as $answer) {
+        $answeredQuestionIndexes[intval($answer['question_index'])] = true;
+    }
+
+    if (isset($answeredQuestionIndexes[$questionIndex])) {
+        header('Location: ../quiz.php?question=' . $questionIndex);
+        exit;
+    }
+
+    $nextQuestionIndex = count($quiz['questions']);
+
+    foreach (array_keys($quiz['questions']) as $index) {
+        if (!isset($answeredQuestionIndexes[$index])) {
+            $nextQuestionIndex = $index;
+            break;
+        }
+    }
+
+    if ($questionIndex !== $nextQuestionIndex) {
+        die('Beantwoord eerst de huidige vraag.');
+    }
+}
+
 $correctIndex = intval($quiz['questions'][$questionIndex]['correct']);
 $isCorrect = $answerIndex === $correctIndex;
 
 $existing = supabase_request(
     'GET',
-    'brainbananas_answers?session_code=eq.' . urlencode($code) .
-    '&student_name=eq.' . urlencode($student) .
+    $existingEndpoint .
     '&question_index=eq.' . $questionIndex .
     '&select=*'
 );
@@ -69,5 +109,5 @@ if (!$result['ok']) {
     die('Kon antwoord niet opslaan: ' . htmlspecialchars($result['raw'] ?? 'Onbekende fout'));
 }
 
-header('Location: ../quiz.php');
+header('Location: ../quiz.php' . ($selfPaced ? '?question=' . $questionIndex : ''));
 exit;

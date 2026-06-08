@@ -185,7 +185,8 @@ function archive_session_if_complete(
             'question_count' => $totalQuestions,
             'counted_question_count' => $countedQuestions,
             'skipped_questions' => $skippedQuestions,
-            'show_answer_feedback' => !empty($sessionOptions['show_answer_feedback'])
+            'show_answer_feedback' => !empty($sessionOptions['show_answer_feedback']),
+            'self_paced' => !empty($sessionOptions['self_paced'])
         ],
         'quiz' => $quiz,
         'students' => array_values($studentResults)
@@ -288,6 +289,60 @@ $playersResult = supabase_request(
 
 $allAnswers = $answersResult['data'] ?? [];
 $players = $playersResult['data'] ?? [];
+$sessionOptions = brainbananas_read_session_options($code);
+$selfPaced = !empty($sessionOptions['self_paced']);
+
+if ($selfPaced) {
+    $progressRows = [];
+    $completedCount = 0;
+
+    foreach ($players as $player) {
+        $studentName = $player['student_name'];
+        $answeredQuestions = [];
+        $correctCount = 0;
+
+        foreach ($allAnswers as $answer) {
+            if (($answer['student_name'] ?? '') !== $studentName) {
+                continue;
+            }
+
+            $answeredQuestions[intval($answer['question_index'])] = true;
+
+            if (!empty($answer['is_correct'])) {
+                $correctCount++;
+            }
+        }
+
+        $answeredCount = count($answeredQuestions);
+        $isComplete = $answeredCount >= $totalQuestions;
+
+        if ($isComplete) {
+            $completedCount++;
+        }
+
+        $progressRows[] = [
+            'student_name' => $studentName,
+            'answered_count' => $answeredCount,
+            'correct_count' => $correctCount,
+            'is_complete' => $isComplete
+        ];
+    }
+
+    echo json_encode([
+        'ok' => true,
+        'session_code' => $code,
+        'quiz_title' => $quiz['title'] ?? $quizFile,
+        'total_questions' => $totalQuestions,
+        'quiz_finished' => false,
+        'self_paced' => true,
+        'player_count' => count($players),
+        'completed_count' => $completedCount,
+        'progress_rows' => $progressRows,
+        'server_time' => date('Y-m-d H:i:s'),
+        'timezone' => 'Europe/Amsterdam'
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 if ($currentQuestion >= $totalQuestions) {
     echo json_encode([

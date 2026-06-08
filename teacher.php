@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $code = strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
     $showAnswerFeedback = isset($_POST['show_answer_feedback']);
+    $selfPaced = isset($_POST['self_paced']);
 
     $result = supabase_request("POST", "brainbananas_sessions", [
         "code" => $code,
@@ -46,7 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     brainbananas_write_session_options($code, [
-        'show_answer_feedback' => $showAnswerFeedback
+        'show_answer_feedback' => $showAnswerFeedback,
+        'self_paced' => $selfPaced
     ]);
 
     header("Location: live.php?code=" . urlencode($code));
@@ -187,6 +189,18 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
 
                             <div class="text-secondary small mt-2" id="quiz-filter-status"></div>
                         </div>
+
+                        <label class="form-check mb-3">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="self_paced"
+                                value="1"
+                            >
+                            <span class="form-check-label">
+                                Leerlingen werken zelfstandig en gaan zelf naar de volgende vraag
+                            </span>
+                        </label>
 
                         <label class="form-check mb-3">
                             <input
