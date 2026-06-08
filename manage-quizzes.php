@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/includes/theme.php';
 require_once __DIR__ . '/includes/teacher-auth.php';
+require_once __DIR__ . '/includes/pdf.php';
 
 brainbananas_require_teacher_auth();
 
@@ -27,12 +28,66 @@ function is_valid_quiz_filename(string $filename): bool
     return preg_match('/^[a-zA-Z0-9._-]+\.json$/', $filename) === 1;
 }
 
+function quiz_pdf_filename(string $filename): string
+{
+    return preg_replace('/\.json$/i', '', $filename) . '.pdf';
+}
+
 $quizDir = __DIR__ . '/quizzes';
 $message = '';
 $messageType = 'success';
 
 if (!is_dir($quizDir)) {
     mkdir($quizDir, 0755, true);
+}
+
+if (($_GET['action'] ?? '') === 'download_pdf') {
+    $file = normalize_quiz_filename((string)($_GET['file'] ?? ''));
+    $quizPath = $quizDir . '/' . $file;
+
+    if (!is_valid_quiz_filename($file) || !file_exists($quizPath)) {
+        die('Quizbestand niet gevonden.');
+    }
+
+    $quiz = json_decode(file_get_contents($quizPath), true);
+
+    if (!is_array($quiz) || !isset($quiz['questions']) || !is_array($quiz['questions'])) {
+        die('Ongeldige quiz-JSON.');
+    }
+
+    ob_start();
+    ?>
+    <h1><?= h($quiz['title'] ?? $file) ?></h1>
+    <div class="muted">
+        BrainBananas quiz · <?= h($file) ?>
+    </div>
+
+    <?php foreach ($quiz['questions'] as $questionIndex => $question): ?>
+        <?php $answers = array_values($question['answers'] ?? []); ?>
+        <h2>Vraag <?= h($questionIndex + 1) ?></h2>
+        <p><?= h($question['question'] ?? '') ?></p>
+
+        <?php if ($answers): ?>
+            <table>
+                <tbody>
+                <?php foreach ($answers as $answerIndex => $answer): ?>
+                    <tr>
+                        <td style="width: 28px; font-weight: bold;">
+                            <?= h(chr(65 + $answerIndex)) ?>
+                        </td>
+                        <td><?= h($answer) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    <?php endforeach; ?>
+    <?php
+    $body = ob_get_clean();
+    brainbananas_stream_pdf(
+        brainbananas_pdf_document((string)($quiz['title'] ?? $file), $body),
+        quiz_pdf_filename($file)
+    );
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
@@ -205,21 +260,28 @@ sort($quizzes);
                                         Bewerken
                                     </a>
 
-                                <form method="post">
-                                    <input
-                                        type="hidden"
-                                        name="action"
-                                        value="delete"
+                                    <a
+                                        href="manage-quizzes.php?action=download_pdf&amp;file=<?= urlencode($name) ?>"
+                                        class="btn btn-outline-secondary"
                                     >
-                                    <input
-                                        type="hidden"
-                                        name="old_name"
-                                        value="<?= h($name) ?>"
-                                    >
-                                    <button class="btn btn-outline-danger">
-                                        Verwijderen
-                                    </button>
-                                </form>
+                                        PDF
+                                    </a>
+
+                                    <form method="post">
+                                        <input
+                                            type="hidden"
+                                            name="action"
+                                            value="delete"
+                                        >
+                                        <input
+                                            type="hidden"
+                                            name="old_name"
+                                            value="<?= h($name) ?>"
+                                        >
+                                        <button class="btn btn-outline-danger">
+                                            Verwijderen
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
