@@ -69,7 +69,12 @@ if (!$result['ok']) {
 }
 
 if ($isFinishing) {
-    brainbananas_archive_session($code);
+    $archiveResult = brainbananas_archive_session($code);
+
+    if (!$archiveResult['ok']) {
+        die('De quiz is afgerond, maar kon niet automatisch worden opgeslagen: ' .
+            htmlspecialchars($archiveResult['error'] ?? 'Onbekende fout'));
+    }
 }
 
 header('Location: ../live.php?code=' . urlencode($code));

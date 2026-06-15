@@ -44,6 +44,10 @@ function brainbananas_archive_session(string $code): array
         'brainbananas_answers?session_code=eq.' . urlencode($code) . '&select=*'
     );
 
+    if (!$playersResult['ok'] || !$answersResult['ok']) {
+        return ['ok' => false, 'error' => 'Kon niet alle leerlingen en antwoorden ophalen.'];
+    }
+
     $players = $playersResult['data'] ?? [];
     $answers = $answersResult['data'] ?? [];
     $totalQuestions = count($quiz['questions']);
@@ -86,13 +90,11 @@ function brainbananas_archive_session(string $code): array
             continue;
         }
 
-        if (in_array($questionIndex, $skippedQuestions, true)) {
-            continue;
-        }
-
         $question = $quiz['questions'][$questionIndex];
         $correctIndex = intval($question['correct']);
         $isCorrect = !empty($answer['is_correct']);
+        $isSkipped = in_array($questionIndex, $skippedQuestions, true);
+        $wasAlreadyAnswered = !empty($studentResults[$name]['answers'][$questionIndex]['answered']);
 
         $studentResults[$name]['answers'][$questionIndex] = [
             'question_index' => $questionIndex,
@@ -103,13 +105,15 @@ function brainbananas_archive_session(string $code): array
             'answered' => true,
             'answered_at' => $answer['created_at'] ?? null,
             'uitleg' => $question['uitleg'] ?? $question['explanation'] ?? null,
-            'skipped_by_teacher' => false
+            'skipped_by_teacher' => $isSkipped
         ];
 
-        $studentResults[$name]['answered']++;
+        if (!$isSkipped && !$wasAlreadyAnswered) {
+            $studentResults[$name]['answered']++;
 
-        if ($isCorrect) {
-            $studentResults[$name]['correct']++;
+            if ($isCorrect) {
+                $studentResults[$name]['correct']++;
+            }
         }
     }
 
@@ -139,20 +143,27 @@ function brainbananas_archive_session(string $code): array
         $index = [];
     }
 
-    foreach ($index as $item) {
+    $existingIndex = null;
+    $historyFile = null;
+
+    foreach ($index as $itemIndex => $item) {
         if (($item['session_code'] ?? '') === $code) {
-            return [
-                'ok' => true,
-                'already_saved' => true,
-                'file' => $item['file'] ?? null
-            ];
+            $existingIndex = $itemIndex;
+            $historyFile = basename((string)($item['file'] ?? ''));
+            break;
         }
     }
 
     date_default_timezone_set('Europe/Amsterdam');
 
-    $createdAt = date('Y-m-d_His');
-    $historyFile = $code . '_' . $createdAt . '.json';
+    if ($historyFile === '') {
+        $historyFile = null;
+    }
+
+    if ($historyFile === null) {
+        $historyFile = $code . '_' . date('Y-m-d_His') . '.json';
+    }
+
     $historyPath = $historyDir . '/' . $historyFile;
     $dateReadable = date('Y-m-d H:i:s');
     $dateIso = date('c');
@@ -178,12 +189,17 @@ function brainbananas_archive_session(string $code): array
         'students' => array_values($studentResults)
     ];
 
-    file_put_contents(
+    $archiveWritten = file_put_contents(
         $historyPath,
-        json_encode($archive, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        json_encode($archive, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+        LOCK_EX
     );
 
-    $index[] = [
+    if ($archiveWritten === false) {
+        return ['ok' => false, 'error' => 'Kon sessiebestand niet opslaan.'];
+    }
+
+    $indexItem = [
         'session_code' => $code,
         'quiz_file' => $quizFile,
         'quiz_title' => $quiz['title'] ?? $quizFile,
@@ -197,14 +213,26 @@ function brainbananas_archive_session(string $code): array
         'counted_question_count' => $countedQuestions
     ];
 
-    file_put_contents(
+    if ($existingIndex === null) {
+        $index[] = $indexItem;
+    } else {
+        $index[$existingIndex] = $indexItem;
+    }
+
+    $indexWritten = file_put_contents(
         $indexPath,
-        json_encode($index, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        json_encode($index, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+        LOCK_EX
     );
+
+    if ($indexWritten === false) {
+        return ['ok' => false, 'error' => 'Kon sessie-index niet opslaan.'];
+    }
 
     return [
         'ok' => true,
-        'already_saved' => false,
+        'already_saved' => $existingIndex !== null,
+        'updated' => $existingIndex !== null,
         'file' => $historyFile
     ];
 }
