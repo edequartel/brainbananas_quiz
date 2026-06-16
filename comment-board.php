@@ -81,7 +81,7 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
             </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-sm-2 g-2 mb-4">
+        <div class="row row-cols-1 row-cols-sm-3 g-2 mb-4">
             <div class="col">
                 <a href="comment-student.php?code=<?= urlencode($code) ?>" class="btn btn-yellow w-100" target="_blank">
                     Leerlinglogin openen
@@ -91,6 +91,14 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
                 <a href="live.php?code=<?= urlencode($code) ?>" class="btn btn-outline-secondary w-100">
                     Terug naar live
                 </a>
+            </div>
+            <div class="col">
+                <form method="post" action="api/clear-comments.php" id="clear-board-form">
+                    <input type="hidden" name="code" value="<?= h($code) ?>">
+                    <button class="btn btn-outline-danger w-100">
+                        Reactiebord wissen
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -249,6 +257,16 @@ teacherCommentForm.addEventListener("submit", async (event) => {
         showMessage("danger", "Kon opmerking niet plaatsen.");
     } finally {
         button.disabled = false;
+    }
+});
+
+document.getElementById("clear-board-form").addEventListener("submit", (event) => {
+    const confirmed = window.confirm(
+        "Weet je zeker dat je alle reacties op dit reactiebord wilt wissen?"
+    );
+
+    if (!confirmed) {
+        event.preventDefault();
     }
 });
 

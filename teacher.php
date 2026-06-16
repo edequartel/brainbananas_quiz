@@ -99,12 +99,26 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
                     <?= h($activeCode) ?>
                 </div>
 
-                <a
-                    href="live.php?code=<?= urlencode($activeCode) ?>"
-                    class="btn btn-yellow btn-lg w-100"
-                >
-                    Live overzicht openen
-                </a>
+                <div class="row row-cols-1 row-cols-sm-2 g-2">
+                    <div class="col">
+                        <a
+                            href="live.php?code=<?= urlencode($activeCode) ?>"
+                            class="btn btn-yellow btn-lg w-100"
+                        >
+                            Live overzicht openen
+                        </a>
+                    </div>
+
+                    <div class="col">
+                        <a
+                            href="comment-board.php?code=<?= urlencode($activeCode) ?>"
+                            class="btn btn-outline-secondary btn-lg w-100"
+                            target="_blank"
+                        >
+                            Reactiebord openen
+                        </a>
+                    </div>
+                </div>
             </div>
 
         <?php endif; ?>

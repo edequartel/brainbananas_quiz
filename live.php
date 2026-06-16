@@ -65,6 +65,24 @@ function h($value): string
                 </span>
             </div>
 
+            <div class="mt-3 d-flex gap-2 justify-content-center flex-wrap">
+                <a
+                    href="comment-board.php?code=<?= urlencode($code) ?>"
+                    class="btn btn-yellow"
+                    target="_blank"
+                >
+                    Reactiebord openen
+                </a>
+
+                <a
+                    href="comment-student.php?code=<?= urlencode($code) ?>"
+                    class="btn btn-outline-secondary"
+                    target="_blank"
+                >
+                    Leerlinglogin reactiebord
+                </a>
+            </div>
+
             <div class="mt-3 d-none gap-2 justify-content-center flex-wrap" data-expanded-field>
 
                 <a
@@ -76,26 +94,10 @@ function h($value): string
                 </a>
 
                 <a
-                    href="comment-student.php?code=<?= urlencode($code) ?>"
-                    class="btn btn-outline-secondary"
-                    target="_blank"
-                >
-                    Reactiebord leerling openen
-                </a>
-
-                <a
                     href="report.php?code=<?= urlencode($code) ?>"
                     class="btn btn-yellow"
                 >
                     Live rapport openen
-                </a>
-
-                <a
-                    href="comment-board.php?code=<?= urlencode($code) ?>"
-                    class="btn btn-outline-secondary"
-                    target="_blank"
-                >
-                    Reactiebord tonen
                 </a>
 
                 <a
