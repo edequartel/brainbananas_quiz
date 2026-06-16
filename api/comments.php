@@ -39,14 +39,14 @@ function brainbananas_comments_limit(string $value, int $maxLength): string
 brainbananas_cleanup_old_sessions();
 
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
-$sessionStudent = trim((string)($_SESSION['student'] ?? ''));
-$sessionCode = strtoupper(trim((string)($_SESSION['code'] ?? '')));
+$sessionStudent = trim((string)($_SESSION['comment_student'] ?? ''));
+$sessionCode = strtoupper(trim((string)($_SESSION['comment_code'] ?? '')));
 
 if ($method === 'POST') {
     if ($sessionStudent === '' || $sessionCode === '') {
         brainbananas_comments_json([
             'ok' => false,
-            'error' => 'Geen actieve leerlingensessie.'
+            'error' => 'Log eerst in op het reactiebord.'
         ]);
     }
 

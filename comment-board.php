@@ -3,6 +3,7 @@
 session_start();
 
 require_once __DIR__ . '/includes/theme.php';
+require_once __DIR__ . '/includes/teacher-auth.php';
 require __DIR__ . '/api/supabase.php';
 require __DIR__ . '/api/session-cleanup.php';
 
@@ -11,25 +12,53 @@ function h($value): string
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
+function brainbananas_comment_session_exists(string $code): bool
+{
+    $sessionResult = supabase_request(
+        'GET',
+        'brainbananas_sessions?code=eq.' . urlencode($code) . '&select=code,status'
+    );
+
+    return $sessionResult['ok'] && !empty($sessionResult['data']);
+}
+
 brainbananas_cleanup_old_sessions();
 
-$student = trim((string)($_SESSION['student'] ?? ''));
-$sessionCode = strtoupper(trim((string)($_SESSION['code'] ?? '')));
-$requestedCode = strtoupper(trim((string)($_GET['code'] ?? '')));
-$code = $requestedCode !== '' ? $requestedCode : $sessionCode;
-$canPost = $student !== '' && $sessionCode !== '' && $sessionCode === $code;
+$loginError = '';
 
-if ($code === '') {
-    header('Location: student.php');
+if (isset($_GET['logout'])) {
+    unset($_SESSION['comment_student'], $_SESSION['comment_code']);
+
+    header('Location: comment-board.php');
     exit;
 }
 
-$sessionResult = supabase_request(
-    'GET',
-    'brainbananas_sessions?code=eq.' . urlencode($code) . '&select=code,status'
-);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $postedStudent = trim((string)($_POST['student'] ?? ''));
+    $postedCode = strtoupper(trim((string)($_POST['code'] ?? '')));
 
-if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
+    if ($postedStudent === '' || $postedCode === '') {
+        $loginError = 'Naam en sessiecode zijn verplicht.';
+    } elseif (!brainbananas_comment_session_exists($postedCode)) {
+        $loginError = 'Sessie niet gevonden.';
+    } else {
+        $_SESSION['comment_student'] = $postedStudent;
+        $_SESSION['comment_code'] = $postedCode;
+
+        header('Location: comment-board.php?code=' . urlencode($postedCode));
+        exit;
+    }
+}
+
+$student = trim((string)($_SESSION['comment_student'] ?? ''));
+$sessionCode = strtoupper(trim((string)($_SESSION['comment_code'] ?? '')));
+$requestedCode = strtoupper(trim((string)($_GET['code'] ?? '')));
+$code = $requestedCode !== '' ? $requestedCode : $sessionCode;
+$canPost = $student !== '' && $sessionCode !== '' && $sessionCode === $code;
+$teacherView = $requestedCode !== '' && brainbananas_teacher_is_authenticated();
+$showLogin = !$teacherView && ($code === '' || !$canPost);
+
+if ($code !== '' && !brainbananas_comment_session_exists($code)) {
     die('Sessie niet gevonden.');
 }
 
@@ -117,6 +146,66 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
     <div class="container-xl py-4">
         <?php brainbananas_theme_picker(); ?>
 
+        <?php if ($showLogin): ?>
+            <div class="container container-tight py-4">
+                <div class="text-center mb-4">
+                    <h1 class="display-5 chalk-title">
+                        Reactiebord
+                    </h1>
+                    <div class="text-secondary">
+                        Log in om reacties te plaatsen.
+                    </div>
+                </div>
+
+                <?php if ($loginError !== ''): ?>
+                    <div class="alert alert-danger">
+                        <?= h($loginError) ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="mb-3">
+                                <label class="form-label fs-4 fw-bold">
+                                    Je naam
+                                </label>
+                                <input
+                                    type="text"
+                                    name="student"
+                                    class="form-control form-control-lg"
+                                    placeholder="Vul je naam in"
+                                    autocomplete="name"
+                                    required
+                                >
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fs-4 fw-bold">
+                                    Sessiecode
+                                </label>
+                                <input
+                                    type="text"
+                                    name="code"
+                                    class="form-control form-control-lg text-uppercase text-center fw-bold"
+                                    value="<?= h($requestedCode) ?>"
+                                    placeholder="ABC123"
+                                    autocomplete="off"
+                                    autocapitalize="characters"
+                                    spellcheck="false"
+                                    required
+                                >
+                            </div>
+
+                            <button class="btn btn-yellow btn-lg w-100">
+                                Naar reactiebord
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php else: ?>
+
         <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-end mb-4">
             <div>
                 <div class="text-secondary">
@@ -129,8 +218,8 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
 
             <div class="d-flex gap-2 flex-wrap">
                 <?php if ($canPost): ?>
-                    <a href="quiz.php" class="btn btn-outline-light">
-                        Terug naar quiz
+                    <a href="comment-board.php?logout=1" class="btn btn-outline-light">
+                        Wissel leerling
                     </a>
                 <?php else: ?>
                     <a href="live.php?code=<?= urlencode($code) ?>" class="btn btn-outline-light">
@@ -139,6 +228,15 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
                 <?php endif; ?>
             </div>
         </div>
+
+        <?php if ($teacherView): ?>
+            <div class="alert alert-info">
+                Leerlingen loggen apart in via
+                <strong>comment-board.php</strong>
+                met sessiecode
+                <strong><?= h($code) ?></strong>.
+            </div>
+        <?php endif; ?>
 
         <?php if ($canPost): ?>
             <form id="comment-form" class="mb-4">
@@ -172,9 +270,11 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
         <section class="blackboard">
             <div id="comments-grid" class="row g-3"></div>
         </section>
+        <?php endif; ?>
     </div>
 </div>
 
+<?php if (!$showLogin): ?>
 <script>
 const boardCode = <?= json_encode($code) ?>;
 const canPost = <?= json_encode($canPost) ?>;
@@ -289,6 +389,7 @@ if (commentForm && canPost) {
 loadComments();
 setInterval(loadComments, 2500);
 </script>
+<?php endif; ?>
 
 <script src="tabler/core/dist/js/tabler.min.js"></script>
 
