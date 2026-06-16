@@ -151,6 +151,10 @@ if ($activeBlackboardCode === '') {
         href="tabler/core/dist/css/tabler.min.css"
         rel="stylesheet"
     >
+    <link
+        href="tabler/icons-webfont/dist/tabler-icons.min.css"
+        rel="stylesheet"
+    >
     <?php brainbananas_theme_head(); ?>
 </head>
 
@@ -201,7 +205,7 @@ if ($activeBlackboardCode === '') {
                     <div class="alert alert-success">
                         <h3 class="alert-title">Reactiebord actief</h3>
                         <p class="mb-2">Geef deze code aan je leerlingen:</p>
-                        <div class="display-4 fw-bold mb-3">
+                        <div class="h2 fw-bold mb-3">
                             <?= h($activeBlackboardCode) ?>
                         </div>
 
@@ -209,9 +213,10 @@ if ($activeBlackboardCode === '') {
                             <div class="col">
                                 <a
                                     href="comment-board.php?code=<?= urlencode($activeBlackboardCode) ?>"
-                                    class="btn btn-yellow w-100"
+                                    class="btn btn-sm btn-yellow w-100 d-inline-flex align-items-center justify-content-center gap-2"
                                     target="_blank"
                                 >
+                                    <i class="ti ti-message-circle" aria-hidden="true"></i>
                                     Reactiebord openen
                                 </a>
                             </div>
@@ -219,9 +224,10 @@ if ($activeBlackboardCode === '') {
                             <div class="col">
                                 <a
                                     href="comment-student.php?code=<?= urlencode($activeBlackboardCode) ?>"
-                                    class="btn btn-outline-secondary w-100"
+                                    class="btn btn-sm btn-outline-secondary w-100 d-inline-flex align-items-center justify-content-center gap-2"
                                     target="_blank"
                                 >
+                                    <i class="ti ti-user-plus" aria-hidden="true"></i>
                                     Leerlinglogin openen
                                 </a>
                             </div>
@@ -230,7 +236,8 @@ if ($activeBlackboardCode === '') {
                                 <form method="post" data-confirm-end-blackboard>
                                     <input type="hidden" name="teacher_action" value="end_blackboard">
                                     <input type="hidden" name="blackboard_code" value="<?= h($activeBlackboardCode) ?>">
-                                    <button class="btn btn-outline-danger w-100">
+                                    <button class="btn btn-sm btn-outline-danger w-100 d-inline-flex align-items-center justify-content-center gap-2">
+                                        <i class="ti ti-player-stop" aria-hidden="true"></i>
                                         Reactiebord beëindigen
                                     </button>
                                 </form>
@@ -240,7 +247,8 @@ if ($activeBlackboardCode === '') {
                                 <form method="post" data-confirm-new-blackboard>
                                     <input type="hidden" name="teacher_action" value="restart_blackboard">
                                     <input type="hidden" name="blackboard_code" value="<?= h($activeBlackboardCode) ?>">
-                                    <button class="btn btn-outline-primary w-100">
+                                    <button class="btn btn-sm btn-outline-primary w-100 d-inline-flex align-items-center justify-content-center gap-2">
+                                        <i class="ti ti-refresh" aria-hidden="true"></i>
                                         Nieuw reactiebord starten
                                     </button>
                                 </form>
@@ -250,7 +258,8 @@ if ($activeBlackboardCode === '') {
                 <?php else: ?>
                     <form method="post">
                         <input type="hidden" name="teacher_action" value="start_blackboard">
-                        <button class="btn btn-yellow btn-lg w-100">
+                        <button class="btn btn-yellow w-100 d-inline-flex align-items-center justify-content-center gap-2">
+                            <i class="ti ti-message-circle-plus" aria-hidden="true"></i>
                             Reactiebord starten
                         </button>
                     </form>
