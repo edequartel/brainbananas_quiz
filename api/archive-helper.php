@@ -44,12 +44,21 @@ function brainbananas_archive_session(string $code): array
         'brainbananas_answers?session_code=eq.' . urlencode($code) . '&select=*'
     );
 
+    $commentsResult = supabase_request(
+        'GET',
+        'brainbananas_comments' .
+        '?session_code=eq.' . urlencode($code) .
+        '&select=student_name,comment_text,created_at' .
+        '&order=created_at.asc'
+    );
+
     if (!$playersResult['ok'] || !$answersResult['ok']) {
         return ['ok' => false, 'error' => 'Kon niet alle leerlingen en antwoorden ophalen.'];
     }
 
     $players = $playersResult['data'] ?? [];
     $answers = $answersResult['data'] ?? [];
+    $comments = $commentsResult['ok'] ? ($commentsResult['data'] ?? []) : [];
     $totalQuestions = count($quiz['questions']);
     $countedQuestions = max(0, $totalQuestions - count($skippedQuestions));
     $studentResults = [];
@@ -186,7 +195,8 @@ function brainbananas_archive_session(string $code): array
             'self_paced' => !empty($sessionOptions['self_paced'])
         ],
         'quiz' => $quiz,
-        'students' => array_values($studentResults)
+        'students' => array_values($studentResults),
+        'comments' => $comments
     ];
 
     $archiveWritten = file_put_contents(

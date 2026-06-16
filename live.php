@@ -83,6 +83,14 @@ function h($value): string
                 </a>
 
                 <a
+                    href="comment-board.php?code=<?= urlencode($code) ?>"
+                    class="btn btn-outline-secondary"
+                    target="_blank"
+                >
+                    Reactiebord openen
+                </a>
+
+                <a
                     href="history.php"
                     class="btn btn-outline-primary"
                 >

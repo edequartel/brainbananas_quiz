@@ -46,6 +46,11 @@ function brainbananas_cleanup_old_sessions(int $maxAgeHours = 6): void
 
         supabase_request(
             'DELETE',
+            'brainbananas_comments?session_code=eq.' . urlencode($code)
+        );
+
+        supabase_request(
+            'DELETE',
             'brainbananas_sessions?code=eq.' . urlencode($code)
         );
 

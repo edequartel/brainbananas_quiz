@@ -142,6 +142,11 @@ if ($currentQuestion >= $totalQuestions) {
                 <div class="text-secondary">
                     <?= h($student) ?> · sessie <?= h($code) ?>
                 </div>
+                <div class="mt-3">
+                    <a href="comment-board.php" class="btn btn-outline-secondary">
+                        Reactiebord openen
+                    </a>
+                </div>
             </div>
 
             <div class="card bg-white border-yellow">
@@ -270,6 +275,11 @@ if ($alreadyAnswered && $isLastQuestion) {
 
             <div class="text-secondary">
                 <?= h($student) ?> · sessie <?= h($code) ?>
+            </div>
+            <div class="mt-3">
+                <a href="comment-board.php" class="btn btn-outline-secondary">
+                    Reactiebord openen
+                </a>
             </div>
         </div>
 
