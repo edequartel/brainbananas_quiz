@@ -12,6 +12,25 @@ function h($value): string
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
+function brainbananas_comment_board_session_exists(string $code): bool
+{
+    $commentSessionResult = supabase_request(
+        'GET',
+        'brainbananas_comment_sessions?code=eq.' . urlencode($code) . '&status=eq.active&select=code'
+    );
+
+    if ($commentSessionResult['ok'] && !empty($commentSessionResult['data'])) {
+        return true;
+    }
+
+    $sessionResult = supabase_request(
+        'GET',
+        'brainbananas_sessions?code=eq.' . urlencode($code) . '&select=code,status'
+    );
+
+    return $sessionResult['ok'] && !empty($sessionResult['data']);
+}
+
 brainbananas_cleanup_old_sessions();
 
 $code = strtoupper(trim((string)($_GET['code'] ?? '')));
@@ -20,14 +39,16 @@ if ($code === '') {
     die('Geen sessiecode.');
 }
 
-$sessionResult = supabase_request(
+$quizSessionResult = supabase_request(
     'GET',
     'brainbananas_sessions?code=eq.' . urlencode($code) . '&select=code,status'
 );
 
-if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
+if (!brainbananas_comment_board_session_exists($code)) {
     die('Sessie niet gevonden.');
 }
+
+$hasQuizSession = $quizSessionResult['ok'] && !empty($quizSessionResult['data']);
 
 ?>
 <!doctype html>
@@ -81,15 +102,15 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
             </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-sm-3 g-2 mb-4">
+        <div class="row row-cols-1 row-cols-sm-<?= $hasQuizSession ? '3' : '4' ?> g-2 mb-4">
             <div class="col">
                 <a href="comment-student.php?code=<?= urlencode($code) ?>" class="btn btn-yellow w-100" target="_blank">
                     Leerlinglogin openen
                 </a>
             </div>
             <div class="col">
-                <a href="live.php?code=<?= urlencode($code) ?>" class="btn btn-outline-secondary w-100">
-                    Terug naar live
+                <a href="<?= $hasQuizSession ? 'live.php?code=' . urlencode($code) : 'teacher.php?blackboard_code=' . urlencode($code) ?>" class="btn btn-outline-secondary w-100">
+                    <?= $hasQuizSession ? 'Terug naar live' : 'Terug naar leraar' ?>
                 </a>
             </div>
             <div class="col">
@@ -100,6 +121,17 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
                     </button>
                 </form>
             </div>
+            <?php if (!$hasQuizSession): ?>
+                <div class="col">
+                    <form method="post" action="teacher.php" id="end-board-form">
+                        <input type="hidden" name="teacher_action" value="end_blackboard">
+                        <input type="hidden" name="blackboard_code" value="<?= h($code) ?>">
+                        <button class="btn btn-outline-danger w-100">
+                            Reactiebord beëindigen
+                        </button>
+                    </form>
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="alert alert-info">
@@ -269,6 +301,20 @@ document.getElementById("clear-board-form").addEventListener("submit", (event) =
         event.preventDefault();
     }
 });
+
+const endBoardForm = document.getElementById("end-board-form");
+
+if (endBoardForm) {
+    endBoardForm.addEventListener("submit", (event) => {
+        const confirmed = window.confirm(
+            "Weet je zeker dat je dit reactiebord wilt beëindigen?"
+        );
+
+        if (!confirmed) {
+            event.preventDefault();
+        }
+    });
+}
 
 loadComments();
 setInterval(loadComments, 2500);

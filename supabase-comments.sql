@@ -12,3 +12,13 @@ alter table public.brainbananas_comments
 
 create index if not exists brainbananas_comments_session_code_created_at_idx
     on public.brainbananas_comments (session_code, created_at);
+
+create table if not exists public.brainbananas_comment_sessions (
+    code text primary key,
+    status text not null default 'active',
+    created_at timestamptz not null default now(),
+    ended_at timestamptz
+);
+
+create index if not exists brainbananas_comment_sessions_status_created_at_idx
+    on public.brainbananas_comment_sessions (status, created_at);

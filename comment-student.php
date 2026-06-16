@@ -13,6 +13,15 @@ function h($value): string
 
 function brainbananas_comment_session_exists(string $code): bool
 {
+    $commentSessionResult = supabase_request(
+        'GET',
+        'brainbananas_comment_sessions?code=eq.' . urlencode($code) . '&status=eq.active&select=code'
+    );
+
+    if ($commentSessionResult['ok'] && !empty($commentSessionResult['data'])) {
+        return true;
+    }
+
     $sessionResult = supabase_request(
         'GET',
         'brainbananas_sessions?code=eq.' . urlencode($code) . '&select=code,status'

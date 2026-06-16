@@ -18,6 +18,76 @@ $quizzes = glob(__DIR__ . "/quizzes/*.json");
 brainbananas_cleanup_old_sessions();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $teacherAction = (string)($_POST['teacher_action'] ?? '');
+
+    if ($teacherAction === 'start_blackboard') {
+        $blackboardCode = strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
+
+        $blackboardResult = supabase_request("POST", "brainbananas_comment_sessions", [
+            "code" => $blackboardCode,
+            "status" => "active"
+        ]);
+
+        if (!$blackboardResult["ok"]) {
+            die("Kon reactiebord niet maken: " . h($blackboardResult["raw"] ?? "Onbekende fout"));
+        }
+
+        header("Location: teacher.php?blackboard_code=" . urlencode($blackboardCode));
+        exit;
+    }
+
+    if ($teacherAction === 'end_blackboard') {
+        $blackboardCode = strtoupper(trim((string)($_POST['blackboard_code'] ?? '')));
+
+        if ($blackboardCode === '') {
+            die("Reactiebord-code ontbreekt.");
+        }
+
+        $endResult = supabase_request(
+            "PATCH",
+            "brainbananas_comment_sessions?code=eq." . urlencode($blackboardCode),
+            [
+                "status" => "ended",
+                "ended_at" => gmdate('c')
+            ]
+        );
+
+        if (!$endResult["ok"]) {
+            die("Kon reactiebord niet beëindigen: " . h($endResult["raw"] ?? "Onbekende fout"));
+        }
+
+        header("Location: teacher.php");
+        exit;
+    }
+
+    if ($teacherAction === 'restart_blackboard') {
+        $blackboardCode = strtoupper(trim((string)($_POST['blackboard_code'] ?? '')));
+
+        if ($blackboardCode !== '') {
+            supabase_request(
+                "PATCH",
+                "brainbananas_comment_sessions?code=eq." . urlencode($blackboardCode),
+                [
+                    "status" => "ended",
+                    "ended_at" => gmdate('c')
+                ]
+            );
+        }
+
+        $newBlackboardCode = strtoupper(substr(bin2hex(random_bytes(4)), 0, 6));
+
+        $newBlackboardResult = supabase_request("POST", "brainbananas_comment_sessions", [
+            "code" => $newBlackboardCode,
+            "status" => "active"
+        ]);
+
+        if (!$newBlackboardResult["ok"]) {
+            die("Kon nieuw reactiebord niet maken: " . h($newBlackboardResult["raw"] ?? "Onbekende fout"));
+        }
+
+        header("Location: teacher.php?blackboard_code=" . urlencode($newBlackboardCode));
+        exit;
+    }
 
     $quiz = basename($_POST["quiz"] ?? "");
 
@@ -56,6 +126,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 $activeCode = strtoupper(trim($_GET["code"] ?? ""));
+$activeBlackboardCode = strtoupper(trim($_GET["blackboard_code"] ?? ""));
+
+if ($activeBlackboardCode === '') {
+    $activeBlackboardResult = supabase_request(
+        'GET',
+        'brainbananas_comment_sessions?status=eq.active&select=*&order=created_at.desc&limit=1'
+    );
+
+    if ($activeBlackboardResult['ok'] && !empty($activeBlackboardResult['data'])) {
+        $activeBlackboardCode = strtoupper((string)($activeBlackboardResult['data'][0]['code'] ?? ''));
+    }
+}
 ?>
 
 <!doctype html>
@@ -99,29 +181,82 @@ $activeCode = strtoupper(trim($_GET["code"] ?? ""));
                     <?= h($activeCode) ?>
                 </div>
 
-                <div class="row row-cols-1 row-cols-sm-2 g-2">
-                    <div class="col">
-                        <a
-                            href="live.php?code=<?= urlencode($activeCode) ?>"
-                            class="btn btn-yellow btn-lg w-100"
-                        >
-                            Live overzicht openen
-                        </a>
-                    </div>
-
-                    <div class="col">
-                        <a
-                            href="comment-board.php?code=<?= urlencode($activeCode) ?>"
-                            class="btn btn-outline-secondary btn-lg w-100"
-                            target="_blank"
-                        >
-                            Reactiebord openen
-                        </a>
-                    </div>
-                </div>
+                <a
+                    href="live.php?code=<?= urlencode($activeCode) ?>"
+                    class="btn btn-yellow btn-lg w-100"
+                >
+                    Live overzicht openen
+                </a>
             </div>
 
         <?php endif; ?>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="card-title">Reactiebord</h2>
+            </div>
+
+            <div class="card-body">
+                <?php if ($activeBlackboardCode !== ''): ?>
+                    <div class="alert alert-success">
+                        <h3 class="alert-title">Reactiebord actief</h3>
+                        <p class="mb-2">Geef deze code aan je leerlingen:</p>
+                        <div class="display-4 fw-bold mb-3">
+                            <?= h($activeBlackboardCode) ?>
+                        </div>
+
+                        <div class="row row-cols-1 row-cols-sm-2 g-2">
+                            <div class="col">
+                                <a
+                                    href="comment-board.php?code=<?= urlencode($activeBlackboardCode) ?>"
+                                    class="btn btn-yellow w-100"
+                                    target="_blank"
+                                >
+                                    Reactiebord openen
+                                </a>
+                            </div>
+
+                            <div class="col">
+                                <a
+                                    href="comment-student.php?code=<?= urlencode($activeBlackboardCode) ?>"
+                                    class="btn btn-outline-secondary w-100"
+                                    target="_blank"
+                                >
+                                    Leerlinglogin openen
+                                </a>
+                            </div>
+
+                            <div class="col">
+                                <form method="post" data-confirm-end-blackboard>
+                                    <input type="hidden" name="teacher_action" value="end_blackboard">
+                                    <input type="hidden" name="blackboard_code" value="<?= h($activeBlackboardCode) ?>">
+                                    <button class="btn btn-outline-danger w-100">
+                                        Reactiebord beëindigen
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="col">
+                                <form method="post" data-confirm-new-blackboard>
+                                    <input type="hidden" name="teacher_action" value="restart_blackboard">
+                                    <input type="hidden" name="blackboard_code" value="<?= h($activeBlackboardCode) ?>">
+                                    <button class="btn btn-outline-primary w-100">
+                                        Nieuw reactiebord starten
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <form method="post">
+                        <input type="hidden" name="teacher_action" value="start_blackboard">
+                        <button class="btn btn-yellow btn-lg w-100">
+                            Reactiebord starten
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </div>
+        </div>
 
         <div class="card">
 
@@ -356,6 +491,22 @@ async function checkRealtimeStatus() {
 checkRealtimeStatus();
 
 document.addEventListener("submit", (event) => {
+    if (
+        event.target.matches("[data-confirm-end-blackboard]") &&
+        !window.confirm("Weet je zeker dat je dit reactiebord wilt beëindigen?")
+    ) {
+        event.preventDefault();
+        return;
+    }
+
+    if (
+        event.target.matches("[data-confirm-new-blackboard]") &&
+        !window.confirm("Dit beëindigt het huidige reactiebord en start een nieuw leeg reactiebord. Doorgaan?")
+    ) {
+        event.preventDefault();
+        return;
+    }
+
     event.target.querySelectorAll("button[type='submit'], button:not([type])")
         .forEach((button) => {
             button.disabled = true;
