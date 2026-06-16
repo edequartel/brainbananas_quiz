@@ -48,7 +48,7 @@ function brainbananas_archive_session(string $code): array
         'GET',
         'brainbananas_comments' .
         '?session_code=eq.' . urlencode($code) .
-        '&select=student_name,comment_text,created_at' .
+        '&select=student_name,author_role,comment_text,created_at' .
         '&order=created_at.asc'
     );
 

@@ -2,6 +2,7 @@
 
 session_start();
 
+require __DIR__ . '/../includes/teacher-auth.php';
 require __DIR__ . '/supabase.php';
 require __DIR__ . '/session-cleanup.php';
 
@@ -43,6 +44,13 @@ $sessionStudent = trim((string)($_SESSION['comment_student'] ?? ''));
 $sessionCode = strtoupper(trim((string)($_SESSION['comment_code'] ?? '')));
 
 if ($method === 'POST') {
+    $teacherPost = brainbananas_teacher_is_authenticated() && trim((string)($_POST['code'] ?? '')) !== '';
+
+    if ($teacherPost) {
+        $sessionStudent = 'Leraar';
+        $sessionCode = strtoupper(trim((string)($_POST['code'] ?? '')));
+    }
+
     if ($sessionStudent === '' || $sessionCode === '') {
         brainbananas_comments_json([
             'ok' => false,
@@ -72,6 +80,7 @@ if ($method === 'POST') {
     $insertResult = supabase_request('POST', 'brainbananas_comments', [
         'session_code' => $sessionCode,
         'student_name' => $sessionStudent,
+        'author_role' => $teacherPost ? 'teacher' : 'student',
         'comment_text' => $comment
     ]);
 
@@ -108,7 +117,7 @@ $commentsResult = supabase_request(
     'GET',
     'brainbananas_comments' .
     '?session_code=eq.' . urlencode($code) .
-    '&select=id,student_name,comment_text,created_at' .
+    '&select=id,student_name,author_role,comment_text,created_at' .
     '&order=created_at.asc' .
     '&limit=120'
 );

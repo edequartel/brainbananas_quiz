@@ -40,49 +40,18 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
     <link href="tabler/core/dist/css/tabler.min.css" rel="stylesheet">
     <?php brainbananas_theme_head(); ?>
     <style>
-        body {
-            background: #111814;
-        }
-
-        .blackboard-page {
-            min-height: 100vh;
-            background:
-                linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px),
-                linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
-                #111814;
-            background-size: 36px 36px;
-            color: #f4f1df;
-        }
-
-        .blackboard {
-            min-height: 68vh;
-            border: 8px solid #8a5f34;
-            border-radius: 8px;
-            background:
-                radial-gradient(circle at 20% 15%, rgba(255, 255, 255, .08), transparent 24%),
-                linear-gradient(135deg, #183928, #10291f 55%, #0d2119);
-            box-shadow:
-                inset 0 0 48px rgba(0, 0, 0, .35),
-                0 18px 42px rgba(0, 0, 0, .32);
-            padding: 1.25rem;
-        }
-
-        .chalk-title {
-            color: #f8f4db;
-            font-family: Georgia, "Times New Roman", serif;
-            letter-spacing: 0;
-            text-shadow: 0 1px 0 rgba(255, 255, 255, .2);
-        }
-
         .comment-note {
             height: 100%;
             min-height: 128px;
-            border: 1px solid rgba(255, 255, 255, .22);
+            border: 1px solid var(--tblr-border-color);
             border-radius: 8px;
-            background: rgba(255, 255, 255, .055);
-            color: #fff9d7;
+            background: #fff;
             padding: 1rem;
-            box-shadow: inset 0 0 18px rgba(255, 255, 255, .035);
+        }
+
+        .comment-note-teacher {
+            border-color: var(--tblr-yellow);
+            background: var(--tblr-yellow-lt);
         }
 
         .comment-text {
@@ -93,33 +62,33 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
         }
 
         .comment-meta {
-            color: rgba(248, 244, 219, .72);
+            color: var(--tblr-secondary);
             font-size: .875rem;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-yellow-lt">
 
-<div class="page blackboard-page">
-    <div class="container-xl py-4">
+<div class="page">
+    <div class="container container-tight py-4">
         <?php brainbananas_theme_picker(); ?>
 
-        <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-end mb-4">
-            <div>
-                <div class="text-secondary">
-                    Sessie <?= h($code) ?>
-                </div>
-                <h1 class="display-5 chalk-title mb-0">
-                    Reactiebord
-                </h1>
+        <div class="text-center mb-4">
+            <h1 class="display-5">🍌 BrainBananas</h1>
+            <div class="text-secondary">
+                Reactiebord · sessie <?= h($code) ?>
             </div>
+        </div>
 
-            <div class="d-flex gap-2 flex-wrap">
-                <a href="comment-student.php?code=<?= urlencode($code) ?>" class="btn btn-yellow" target="_blank">
+        <div class="row row-cols-1 row-cols-sm-2 g-2 mb-4">
+            <div class="col">
+                <a href="comment-student.php?code=<?= urlencode($code) ?>" class="btn btn-yellow w-100" target="_blank">
                     Leerlinglogin openen
                 </a>
-                <a href="live.php?code=<?= urlencode($code) ?>" class="btn btn-outline-light">
+            </div>
+            <div class="col">
+                <a href="live.php?code=<?= urlencode($code) ?>" class="btn btn-outline-secondary w-100">
                     Terug naar live
                 </a>
             </div>
@@ -130,11 +99,43 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
             <strong><?= h($code) ?></strong> in.
         </div>
 
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="card-title">Vraag of opmerking plaatsen</h2>
+            </div>
+            <div class="card-body">
+                <form id="teacher-comment-form">
+                    <input type="hidden" name="code" value="<?= h($code) ?>">
+
+                    <div class="mb-3">
+                        <textarea
+                            class="form-control form-control-lg"
+                            name="comment"
+                            id="teacher-comment-input"
+                            rows="3"
+                            maxlength="280"
+                            placeholder="Plaats een vraag of opmerking voor de klas"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button class="btn btn-yellow btn-lg w-100">
+                        Plaatsen als leraar
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <div id="message-area"></div>
 
-        <section class="blackboard">
-            <div id="comments-grid" class="row g-3"></div>
-        </section>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Reacties</h2>
+            </div>
+            <div class="card-body">
+                <div id="comments-grid" class="row g-3"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -142,6 +143,8 @@ if (!$sessionResult['ok'] || empty($sessionResult['data'])) {
 const boardCode = <?= json_encode($code) ?>;
 const commentsGrid = document.getElementById("comments-grid");
 const messageArea = document.getElementById("message-area");
+const teacherCommentForm = document.getElementById("teacher-comment-form");
+const teacherCommentInput = document.getElementById("teacher-comment-input");
 
 function escapeHtml(text) {
     return String(text)
@@ -181,17 +184,24 @@ function renderComments(comments) {
         return;
     }
 
-    commentsGrid.innerHTML = comments.map((comment) => `
+    commentsGrid.innerHTML = comments.map((comment) => {
+        const isTeacher = comment.author_role === "teacher";
+
+        return `
         <article class="col-12 col-md-6 col-xl-4">
-            <div class="comment-note">
+            <div class="comment-note ${isTeacher ? "comment-note-teacher" : ""}">
                 <div class="comment-text mb-3">${escapeHtml(comment.comment_text || "")}</div>
                 <div class="comment-meta d-flex justify-content-between gap-2">
-                    <strong>${escapeHtml(comment.student_name || "Leerling")}</strong>
+                    <strong>
+                        ${escapeHtml(comment.student_name || "Leerling")}
+                        ${isTeacher ? `<span class="badge bg-yellow text-yellow-fg ms-2">Leraar</span>` : ``}
+                    </strong>
                     <span>${escapeHtml(formatTime(comment.created_at))}</span>
                 </div>
             </div>
         </article>
-    `).join("");
+    `;
+    }).join("");
 }
 
 async function loadComments() {
@@ -213,6 +223,34 @@ async function loadComments() {
         showMessage("danger", "Kon reacties niet laden.");
     }
 }
+
+teacherCommentForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(teacherCommentForm);
+    const button = teacherCommentForm.querySelector("button");
+    button.disabled = true;
+
+    try {
+        const response = await fetch("api/comments.php", {
+            method: "POST",
+            body: formData
+        });
+        const data = await response.json();
+
+        if (!data.ok) {
+            showMessage("danger", data.error || "Kon opmerking niet plaatsen.");
+            return;
+        }
+
+        teacherCommentInput.value = "";
+        await loadComments();
+    } catch (error) {
+        showMessage("danger", "Kon opmerking niet plaatsen.");
+    } finally {
+        button.disabled = false;
+    }
+});
 
 loadComments();
 setInterval(loadComments, 2500);
