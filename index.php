@@ -42,7 +42,7 @@
 
     <div class="row g-4">
 
-        <div class="col-12 col-md-6 d-flex">
+        <div class="col-12 col-md-4 d-flex">
 
             <a
                 href="teacher.php"
@@ -69,7 +69,7 @@
 
         </div>
 
-        <div class="col-12 col-md-6 d-flex">
+        <div class="col-12 col-md-4 d-flex">
 
             <a
                 href="student.php"
@@ -83,11 +83,38 @@
                     </div>
 
                     <div class="h1 mb-2">
-                        Leerling
+                        Quiz leerling
                     </div>
 
                     <div class="text-secondary">
                         Doe mee met de quiz en beantwoord vragen live.
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+        <div class="col-12 col-md-4 d-flex">
+
+            <a
+                href="comment-student.php"
+                class="card card-link w-100"
+            >
+
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+
+                    <div class="display-1 mb-4">
+                        💬
+                    </div>
+
+                    <div class="h1 mb-2">
+                        Reactiebord
+                    </div>
+
+                    <div class="text-secondary">
+                        Log apart in om reacties op het bord te plaatsen.
                     </div>
 
                 </div>

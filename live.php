@@ -72,7 +72,15 @@ function h($value): string
                     class="btn btn-outline-secondary"
                     target="_blank"
                 >
-                    Leerlingpagina openen
+                    Quiz leerling openen
+                </a>
+
+                <a
+                    href="comment-student.php?code=<?= urlencode($code) ?>"
+                    class="btn btn-outline-secondary"
+                    target="_blank"
+                >
+                    Reactiebord leerling openen
                 </a>
 
                 <a
@@ -87,7 +95,7 @@ function h($value): string
                     class="btn btn-outline-secondary"
                     target="_blank"
                 >
-                    Reactiebord openen
+                    Reactiebord tonen
                 </a>
 
                 <a
