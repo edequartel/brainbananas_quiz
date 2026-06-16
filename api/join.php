@@ -10,6 +10,11 @@ function h($value): string
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: ../student.php');
+    exit;
+}
+
 $student = trim($_POST["student"] ?? "");
 $code = strtoupper(trim($_POST["code"] ?? ""));
 
@@ -32,6 +37,22 @@ if (!$sessionResult["ok"]) {
 }
 
 if (empty($sessionResult["data"])) {
+    $commentSessionResult = supabase_request(
+        "GET",
+        "brainbananas_comment_sessions" .
+        "?code=eq." . urlencode($code) .
+        "&status=eq.active" .
+        "&select=code"
+    );
+
+    if ($commentSessionResult["ok"] && !empty($commentSessionResult["data"])) {
+        $_SESSION["comment_student"] = $student;
+        $_SESSION["comment_code"] = $code;
+
+        header("Location: ../comment-student.php?code=" . urlencode($code));
+        exit;
+    }
+
     die("Ongeldige of inactieve sessiecode.");
 }
 
